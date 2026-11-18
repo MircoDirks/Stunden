@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Außendienst Logbuch - TC Norden</title>
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="AD-Log" />
+  <meta name="application-name" content="AD-Log" />
+  <meta name="theme-color" content="#0f172a" />
+
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e293b'/%3E%3C/linearGradient%3E%3ClinearGradient id='acc' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2338bdf8'/%3E%3Cstop offset='100%25' stop-color='%232563eb'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23bg)'/%3E%3Ccircle cx='256' cy='256' r='168' fill='none' stroke='url(%23acc)' stroke-width='26'/%3E%3Cpath d='M256 144v116l80 48' fill='none' stroke='%23f8fafc' stroke-width='28' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='256' cy='256' r='18' fill='%2338bdf8'/%3E%3Cpath d='M365 115a145 145 0 0 1 36 42' fill='none' stroke='%2322c55e' stroke-width='20' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%230f172a'/%3E%3Ccircle cx='256' cy='256' r='168' fill='none' stroke='%2338bdf8' stroke-width='28'/%3E%3Cpath d='M256 144v116l80 48' fill='none' stroke='%23ffffff' stroke-width='28' stroke-linecap='round'/%3E%3C/svg%3E" />
+
+  <style>
+    :root {
+      --bg: #0b1120;
+      --card: #131c31;
+      --card-2: #1a2540;
+      --border: #263554;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #3b82f6;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --red: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: calc(88px + env(safe-area-inset-bottom));
+      line-height: 1.45;
+    }
+
+    button, input, select { font-family: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(11, 17, 32, 0.94);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 14px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+      flex-shrink: 0;
+    }
+
+    .brand-title { font-size: 15px; font-weight: 700; }
+    .brand-sub { font-size: 11px; color: #38bdf8; font-weight: 600; }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--muted);
+      margin: 0 0 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .timer-display {
+      text-align: center;
+      padding: 8px 0 16px;
+    }
+
+    .timer-clock {
+      font-size: 44px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 1px;
+      color: #fff;
+    }
+
+    .timer-status {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 5px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      background: var(--card-2);
+      color: var(--muted);
+    }
+
+    .timer-status.active {
+      background: rgba(16, 185, 129, 0.16);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .timer-status.paused {
+      background: rgba(245, 158, 11, 0.16);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.35);
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 15px 14px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.08s ease, opacity 0.15s ease;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.38; cursor: not-allowed; }
+
+    .btn-green { background: var(--green); color: #052e16; }
+    .btn-amber { background: var(--amber); color: #271500; }
+    .btn-red { background: var(--red); color: #fff; }
+    .btn-blue { background: var(--primary); color: #fff; }
+    .btn-ghost {
+      background: var(--card-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-full { width: 100%; }
+    .btn-sm { padding: 9px 12px; font-size: 13px; border-radius: 10px; }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .form-group { margin-bottom: 12px; }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    input[type="time"],
+    input[type="month"],
+    select {
+      width: 100%;
+      min-height: 44px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 12px;
+      color: var(--text);
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus, select:focus { border-color: var(--primary); }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .kpi-box {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+    }
+
+    .kpi-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+    .kpi-val { font-size: 20px; font-weight: 800; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .kpi-sub { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+    .text-green { color: #34d399; }
+    .text-amber { color: #fbbf24; }
+    .text-red { color: #f87171; }
+    .text-blue { color: #60a5fa; }
+
+    .entry-item {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 13px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .entry-date { font-weight: 700; font-size: 14px; }
+    .entry-meta { font-size: 12px; color: var(--muted); margin-top: 3px; }
+    .entry-hours { text-align: right; flex-shrink: 0; }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-plus { background: rgba(16, 185, 129, 0.16); color: #34d399; }
+    .badge-neutral { background: rgba(148, 163, 184, 0.16); color: #cbd5e1; }
+    .badge-spesen { background: rgba(59, 130, 246, 0.18); color: #93c5fd; margin-left: 4px; }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 40;
+      background: rgba(19, 28, 49, 0.97);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      padding: 11px 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .nav-btn.active { color: #38bdf8; }
+    .nav-icon { font-size: 18px; line-height: 1; }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.88);
+      z-index: 100;
+      display: none;
+      flex-direction: column;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-header {
+      background: #0f172a;
+      border-bottom: 1px solid var(--border);
+      padding: calc(12px + env(safe-area-inset-top)) 14px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 14px;
+    }
+
+    .sheet-paper {
+      background: #ffffff;
+      color: #0f172a;
+      border-radius: 12px;
+      padding: 16px;
+      width: 100%;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .sheet-head {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+    }
+
+    .sheet-kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .sheet-kpi {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 8px;
+      background: #f8fafc;
+    }
+
+    .sheet-kpi-label { font-size: 10px; color: #475569; font-weight: 700; }
+    .sheet-kpi-val { font-size: 14px; font-weight: 800; color: #0f172a; margin-top: 2px; }
+
+    .table-scroll {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .sheet-table {
+      width: 100%;
+      min-width: 560px;
+      border-collapse: collapse;
+      font-size: 12px;
+      background: #ffffff;
+      color: #0f172a;
+    }
+
+    .sheet-table th {
+      background: #f1f5f9;
+      color: #1e293b;
+      font-weight: 700;
+      text-align: left;
+      padding: 8px 6px;
+      border-bottom: 1px solid #cbd5e1;
+      white-space: nowrap;
+    }
+
+    .sheet-table td {
+      padding: 7px 6px;
+      border-bottom: 1px solid #e2e8f0;
+      background: #ffffff;
+      color: #0f172a;
+      white-space: nowrap;
+    }
+
+    .sign-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 28px;
+      padding-top: 10px;
+    }
+
+    .sign-line {
+      border-top: 1px solid #334155;
+      padding-top: 5px;
+      font-size: 11px;
+      color: #475569;
+    }
+
+    .dialog-center {
+      margin: auto;
+      width: calc(100% - 28px);
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+    }
+
+    .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+
+    .chip {
+      background: var(--card-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .toast {
+      position: fixed;
+      top: calc(68px + env(safe-area-inset-top));
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1e293b;
+      color: #fff;
+      border: 1px solid #38bdf8;
+      padding: 10px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 200;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-logo">TC</div>
+      <div>
+        <div class="brand-title">Außendienst Logbuch</div>
+        <div class="brand-sub">TC Norden • AD-Log</div>
+      </div>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" onclick="shareAppLink()">Teilen</button>
+  </header>
+
+  <main class="container">
+
+    <!-- TAB 1: STEMPELUHR & TAG -->
+    <section id="view-timer" class="view active">
+      <div class="card">
+        <div class="card-title">
+          <span>Live-Stempeluhr</span>
+          <span id="today-label"></span>
+        </div>
+
+        <div class="timer-display">
+          <div id="live-clock" class="timer-clock">00:00:00</div>
+          <div id="timer-status" class="timer-status">Bereit zum Start</div>
+        </div>
+
+        <div class="form-group">
+          <input type="text" id="live-note" placeholder="Einsatzort / Region / Notiz (optional)" oninput="saveLiveNote()" />
+        </div>
+
+        <div class="btn-grid">
+          <button type="button" id="btn-start" class="btn btn-green" onclick="handleStart()">▶ Arbeitsbeginn</button>
+          <button type="button" id="btn-pause" class="btn btn-amber" onclick="handlePauseToggle()" disabled>⏸ Pause</button>
+          <button type="button" id="btn-stop" class="btn btn-red" style="grid-column: span 2;" onclick="handleStop()" disabled>⏹ Feierabend speichern</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">
+          <span id="form-mode-title">Tag manuell eintragen / korrigieren</span>
+          <button type="button" id="btn-cancel-edit" class="btn btn-ghost btn-sm" style="display:none;" onclick="resetManualForm()">Abbrechen</button>
+        </div>
+
+        <input type="hidden" id="edit-id" value="" />
+
+        <div class="form-row">
+          <div>
+            <label>Datum</label>
+            <input type="date" id="m-date" />
+          </div>
+          <div>
+            <label>Status</label>
+            <select id="m-status" onchange="toggleManualFields()">
+              <option value="Arbeit">Arbeit / Außendienst</option>
+              <option value="Urlaub">Urlaub (8,0 Std.)</option>
+              <option value="Krank">Krank (8,0 Std.)</option>
+              <option value="Feiertag">Feiertag (8,0 Std.)</option>
+              <option value="Frei">Frei / Ausgleich (0 Std.)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="time-fields">
+          <div class="form-row">
+            <div>
+              <label>Beginn</label>
+              <input type="time" id="m-start" value="07:30" />
+            </div>
+            <div>
+              <label>Feierabend</label>
+              <input type="time" id="m-end" value="16:30" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div>
+              <label>Pause (Minuten)</label>
+              <input type="number" id="m-pause" value="30" min="0" max="240" />
+            </div>
+            <div>
+              <label>Einsatzort / Notiz</label>
+              <input type="text" id="m-note" placeholder="z. B. Aurich / Entstörung" />
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-blue btn-full" onclick="saveManualEntry()">💾 Eintrag speichern</button>
+      </div>
+    </section>
+
+    <!-- TAB 2: MONATSÜBERSICHT & EXPORT -->
+    <section id="view-month" class="view">
+      <div class="card">
+        <div class="card-title">
+          <span>Monatsauswertung</span>
+          <input type="month" id="month-picker" style="width:auto; min-height:38px; padding:6px 10px; font-size:13px;" onchange="renderAll()" />
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-box">
+            <div class="kpi-label">Geleistet (Netto)</div>
+            <div id="kpi-ist" class="kpi-val">0,00 Std.</div>
+            <div id="kpi-soll" class="kpi-sub">Soll (Mo–Fr): 0,00 Std.</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label">Überstunden (Plus)</div>
+            <div id="kpi-plus" class="kpi-val text-green">+0,00 Std.</div>
+            <div id="kpi-sub-plus" class="kpi-sub">Sa/So = 0 Soll-Abzug</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label">Real-Stundenlohn</div>
+            <div id="kpi-wage" class="kpi-val text-blue">0,00 €</div>
+            <div id="kpi-minwage" class="kpi-sub">Basis: 2.800 € Brutto</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label">Spesen (&gt; 8 Std.)</div>
+            <div id="kpi-spesen" class="kpi-val text-amber">0,00 €</div>
+            <div id="kpi-spesen-days" class="kpi-sub">0 Tage à 14 €</div>
+          </div>
+        </div>
+
+        <div class="btn-grid" style="margin-top:14px;">
+          <button type="button" class="btn btn-blue btn-sm" onclick="openSheetPreview()">📄 Stundenzettel / PDF</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="exportCSV()">📊 Excel / CSV Export</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>Erfasste Tage (Antippen zum Bearbeiten)</span></div>
+        <div id="entries-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB 3: JAHRESBILANZ -->
+    <section id="view-year" class="view">
+      <div class="card">
+        <div class="card-title">
+          <span>Jahresbilanz</span>
+          <select id="year-picker" style="width:auto; min-height:38px; padding:6px 10px; font-size:13px;" onchange="renderYearView()"></select>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-box">
+            <div class="kpi-label">Gesamt-Ist (Jahr)</div>
+            <div id="yr-ist" class="kpi-val">0,00 Std.</div>
+            <div id="yr-soll" class="kpi-sub">Soll: 0,00 Std.</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label">Überstunden-Summe</div>
+            <div id="yr-plus" class="kpi-val text-green">+0,00 Std.</div>
+            <div class="kpi-sub">Ohne Minusstunden-Abzug</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label">Ø Real-Stundenlohn</div>
+            <div id="yr-wage" class="kpi-val text-blue">0,00 €</div>
+            <div class="kpi-sub">Über aktive Monate</div>
+          </div>
+          <div class="kpi-box">
+            <div class="kpi-label">Offene Spesen (Jahr)</div>
+            <div id="yr-spesen" class="kpi-val text-amber">0,00 €</div>
+            <div id="yr-spesen-days" class="kpi-sub">0 Einsatztage &gt; 8h</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>Monatsübersicht im Jahr</span></div>
+        <div id="year-months-list"></div>
+      </div>
+    </section>
+
+    <!-- TAB 4: RECHNER & PROFIL -->
+    <section id="view-settings" class="view">
+      <div class="card">
+        <div class="card-title"><span>Deine Daten & Gehalt</span></div>
+
+        <div class="form-group">
+          <label>Name (erscheint auf dem Stundenzettel)</label>
+          <input type="text" id="set-name" placeholder="Vorname Nachname" oninput="saveSettings()" />
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Abteilung / Firma</label>
+            <input type="text" id="set-company" placeholder="Außendienst TC Norden" oninput="saveSettings()" />
+          </div>
+          <div>
+            <label>Personal-Nr. (optional)</label>
+            <input type="text" id="set-persnr" placeholder="z. B. 12345" oninput="saveSettings()" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Monatsbrutto (€)</label>
+            <input type="number" id="set-gross" value="2800" step="50" oninput="saveSettings()" />
+          </div>
+          <div>
+            <label>Regel-Wochenstunden (Mo–Fr)</label>
+            <input type="number" id="set-weekly" value="40" step="0.5" oninput="saveSettings()" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div>
+            <label>Übertrag Plusstunden (optional)</label>
+            <input type="number" id="set-carry" value="0" step="0.25" oninput="saveSettings()" />
+          </div>
+          <div>
+            <label>Auto-Pause bei Live-Stopp</label>
+            <select id="set-autopause" onchange="saveSettings()">
+              <option value="legal">Gesetzlich (30m &gt;6h / 45m &gt;9h)</option>
+              <option value="manual">Nur gestempelte Pause</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>Stundenlohn- & Überstunden-Check</span></div>
+        <div class="form-row">
+          <div>
+            <label>Test-Bruttolohn (€)</label>
+            <input type="number" id="calc-gross" value="2800" oninput="runWageCalc()" />
+          </div>
+          <div>
+            <label>Monatsstunden (Ist)</label>
+            <input type="number" id="calc-hours" value="210" oninput="runWageCalc()" />
+          </div>
+        </div>
+        <div id="calc-result" class="kpi-box" style="margin-top:6px;"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>Backup & Datensicherung</span></div>
+        <div class="btn-grid">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="exportBackup()">⬇ Backup sichern</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="document.getElementById('import-file').click()">⬆ Backup laden</button>
+        </div>
+        <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importBackup(event)" />
+        <div id="storage-info" style="font-size:11px; color:var(--muted); margin-top:10px;"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <button type="button" class="nav-btn active" onclick="switchTab('timer', this)">
+      <span class="nav-icon">⏱</span>
+      <span>Stempeluhr</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('month', this)">
+      <span class="nav-icon">📅</span>
+      <span>Monat</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('year', this)">
+      <span class="nav-icon">📈</span>
+      <span>Jahr</span>
+    </button>
+    <button type="button" class="nav-btn" onclick="switchTab('settings', this)">
+      <span class="nav-icon">⚙️</span>
+      <span>Profil</span>
+    </button>
+  </nav>
+
+  <!-- MODAL: STUNDENZETTEL -->
+  <div id="sheet-modal" class="modal-backdrop">
+    <div class="modal-header">
+      <div style="font-weight:700; font-size:14px;">Stundenzettel</div>
+      <div style="display:flex; gap:8px;">
+        <button type="button" class="btn btn-blue btn-sm" onclick="downloadRenderedPDF()">⬇ Als PDF speichern</button>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="closeSheetPreview()">✕</button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div id="sheet-content" class="sheet-paper"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: VERGESSENES AUSSTEMPELN (> 12 STD) -->
+  <div id="forgot-modal" class="modal-backdrop">
+    <div class="dialog-center">
+      <div style="font-weight:800; font-size:17px; margin-bottom:6px;">⚠️ Schicht läuft über 12 Stunden</div>
+      <div id="forgot-text" style="font-size:13px; color:var(--muted);"></div>
+      <div class="chip-row">
+        <button type="button" class="chip" onclick="resolveForgot('16:30')">16:30 Uhr</button>
+        <button type="button" class="chip" onclick="resolveForgot('17:00')">17:00 Uhr</button>
+        <button type="button" class="chip" onclick="resolveForgot('17:30')">17:30 Uhr</button>
+        <button type="button" class="chip" onclick="resolveForgot('18:00')">18:00 Uhr</button>
+        <button type="button" class="chip" onclick="resolveForgot('19:00')">19:00 Uhr</button>
+      </div>
+      <div class="form-row" style="margin-top:10px;">
+        <input type="time" id="forgot-custom-time" value="17:00" />
+        <button type="button" class="btn btn-blue btn-sm" onclick="resolveForgot(document.getElementById('forgot-custom-time').value)">Uhrzeit übernehmen</button>
+      </div>
+      <button type="button" class="btn btn-ghost btn-sm btn-full" style="margin-top:8px;" onclick="document.getElementById('forgot-modal').classList.remove('open')">Weiterlaufen lassen</button>
+    </div>
+  </div>
+
+  <script>
+    const KEY_ENTRIES = 'ad_time_entries_v1';
+    const KEY_SETTINGS = 'ad_time_settings_v1';
+    const KEY_LIVE = 'ad_time_live_v1';
+    const MIN_WAGE_2026 = 13.90;
+
+    let entries = [];
+    let settings = {
+      name: '',
+      company: 'Außendienst TC Norden',
+      persnr: '',
+      gross: 2800,
+      weekly: 40,
+      carry: 0,
+      autopause: 'legal'
+    };
+    let liveState = null;
+
+    function loadAndMigrateStorage() {
+      let loadedEntries = [];
+      let foundKeys = [];
+
+      for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (!k) continue;
+        foundKeys.push(k);
+        try {
+          const raw = localStorage.getItem(k);
+          if (!raw) continue;
+          const parsed = JSON.parse(raw);
+
+          if (Array.isArray(parsed) && parsed.length > 0 && parsed[0] && parsed[0].date) {
+            if (parsed.length > loadedEntries.length) {
+              loadedEntries = parsed.map((item, idx) => ({
+                id: item.id || ('id_mig_' + idx + '_' + Date.now()),
+                date: item.date,
+                status: item.status || item.type || 'Arbeit',
+                start: item.start || item.startTime || '',
+                end: item.end || item.endTime || '',
+                pauseMin: Number(item.pauseMin ?? item.pause ?? 0),
+                note: item.note || item.location || ''
+              }));
+            }
+          }
+
+          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            if (parsed.gross || parsed.brutto || parsed.weekly || parsed.name) {
+              settings = {
+                ...settings,
+                name: parsed.name || settings.name,
+                company: parsed.company || settings.company,
+                persnr: parsed.persnr || settings.persnr,
+                gross: Number(parsed.gross ?? parsed.brutto ?? settings.gross),
+                weekly: Number(parsed.weekly ?? parsed.sollWoche ?? settings.weekly),
+                carry: Number(parsed.carry ?? settings.carry),
+                autopause: parsed.autopause || settings.autopause
+              };
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (loadedEntries.length > 0) {
+        entries = loadedEntries;
+        localStorage.setItem(KEY_ENTRIES, JSON.stringify(entries));
+      }
+      localStorage.setItem(KEY_SETTINGS, JSON.stringify(settings));
+
+      try {
+        liveState = JSON.parse(localStorage.getItem(KEY_LIVE) || 'null');
+      } catch (e) {}
+
+      const infoEl = document.getElementById('storage-info');
+      if (infoEl) {
+        infoEl.textContent = `Gespeicherte Tage: ${entries.length}`;
+      }
+    }
+
+    function init() {
+      loadAndMigrateStorage();
+
+      const now = new Date();
+      const todayStr = toLocalDateStr(now);
+      document.getElementById('m-date').value = todayStr;
+      document.getElementById('today-label').textContent = formatDateDE(todayStr);
+      document.getElementById('month-picker').value = todayStr.slice(0, 7);
+
+      populateYearPicker(now.getFullYear());
+      fillSettingsUI();
+      runWageCalc();
+      updateLiveUI();
+      renderAll();
+      checkForgotClockOut();
+
+      setInterval(updateLiveClock, 1000);
+    }
+
+    function populateYearPicker(currentYear) {
+      const sel = document.getElementById('year-picker');
+      const years = new Set([currentYear - 1, currentYear, currentYear + 1]);
+      entries.forEach(e => {
+        if (e.date) years.add(parseInt(e.date.slice(0, 4), 10));
+      });
+      sel.innerHTML = '';
+      Array.from(years).sort((a, b) => b - a).forEach(y => {
+        const opt = document.createElement('option');
+        opt.value = y;
+        opt.textContent = y;
+        if (y === currentYear) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function fillSettingsUI() {
+      document.getElementById('set-name').value = settings.name || '';
+      document.getElementById('set-company').value = settings.company || 'Außendienst TC Norden';
+      document.getElementById('set-persnr').value = settings.persnr || '';
+      document.getElementById('set-gross').value = settings.gross || 2800;
+      document.getElementById('set-weekly').value = settings.weekly || 40;
+      document.getElementById('set-carry').value = settings.carry || 0;
+      document.getElementById('set-autopause').value = settings.autopause || 'legal';
+      document.getElementById('calc-gross').value = settings.gross || 2800;
+    }
+
+    function saveSettings() {
+      settings.name = document.getElementById('set-name').value.trim();
+      settings.company = document.getElementById('set-company').value.trim() || 'Außendienst TC Norden';
+      settings.persnr = document.getElementById('set-persnr').value.trim();
+      settings.gross = parseFloat(document.getElementById('set-gross').value) || 0;
+      settings.weekly = parseFloat(document.getElementById('set-weekly').value) || 40;
+      settings.carry = parseFloat(document.getElementById('set-carry').value) || 0;
+      settings.autopause = document.getElementById('set-autopause').value;
+      localStorage.setItem(KEY_SETTINGS, JSON.stringify(settings));
+      renderAll();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.style.display = 'block';
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.style.display = 'none'; }, 2600);
+    }
+
+    function switchTab(tab, btn) {
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('view-' + tab).classList.add('active');
+      if (btn) btn.classList.add('active');
+      if (tab === 'month') renderAll();
+      if (tab === 'year') renderYearView();
+    }
+
+    function handleStart() {
+      if (liveState) return;
+      const now = Date.now();
+      liveState = {
+        startTs: now,
+        date: toLocalDateStr(new Date(now)),
+        pausedTotalMs: 0,
+        pauseStartTs: null,
+        note: document.getElementById('live-note').value.trim()
+      };
+      localStorage.setItem(KEY_LIVE, JSON.stringify(liveState));
+      updateLiveUI();
+      showToast('Arbeitsbeginn gestempelt');
+    }
+
+    function handlePauseToggle() {
+      if (!liveState) return;
+      const now = Date.now();
+      if (liveState.pauseStartTs) {
+        liveState.pausedTotalMs += (now - liveState.pauseStartTs);
+        liveState.pauseStartTs = null;
+        showToast('Pause beendet');
+      } else {
+        liveState.pauseStartTs = now;
+        showToast('Pause gestartet');
+      }
+      localStorage.setItem(KEY_LIVE, JSON.stringify(liveState));
+      updateLiveUI();
+    }
+
+    function saveLiveNote() {
+      if (!liveState) return;
+      liveState.note = document.getElementById('live-note').value;
+      localStorage.setItem(KEY_LIVE, JSON.stringify(liveState));
+    }
+
+    function handleStop(customEndTimeStr) {
+      if (!liveState) return;
+      const startD = new Date(liveState.startTs);
+      const startStr = pad2(startD.getHours()) + ':' + pad2(startD.getMinutes());
+
+      let endD = new Date();
+      if (customEndTimeStr) {
+        const [hh, mm] = customEndTimeStr.split(':').map(Number);
+        endD = new Date(startD);
+        endD.setHours(hh, mm, 0, 0);
+        if (endD.getTime() <= startD.getTime()) endD.setDate(endD.getDate() + 1);
+      }
+      const endStr = pad2(endD.getHours()) + ':' + pad2(endD.getMinutes());
+
+      let pausedMs = liveState.pausedTotalMs;
+      if (liveState.pauseStartTs) pausedMs += (endD.getTime() - liveState.pauseStartTs);
+      let pauseMin = Math.round(pausedMs / 60000);
+
+      const grossMin = Math.max(0, Math.round((endD.getTime() - liveState.startTs) / 60000));
+      if (settings.autopause === 'legal') {
+        if (grossMin > 540 && pauseMin < 45) pauseMin = 45;
+        else if (grossMin > 360 && pauseMin < 30) pauseMin = 30;
+      }
+
+      entries.push({
+        id: 'id_' + Date.now(),
+        date: liveState.date,
+        status: 'Arbeit',
+        start: startStr,
+        end: endStr,
+        pauseMin: pauseMin,
+        note: (document.getElementById('live-note').value || liveState.note || '').trim()
+      });
+      saveEntries();
+
+      liveState = null;
+      localStorage.removeItem(KEY_LIVE);
+      document.getElementById('live-note').value = '';
+      updateLiveUI();
+      renderAll();
+      showToast('Feierabend gespeichert!');
+    }
+
+    function checkForgotClockOut() {
+      if (!liveState) return;
+      const elapsedHours = (Date.now() - liveState.startTs) / 3600000;
+      if (elapsedHours >= 12) {
+        const d = new Date(liveState.startTs);
+        const startStr = pad2(d.getHours()) + ':' + pad2(d.getMinutes());
+        document.getElementById('forgot-text').textContent =
+          `Du bist seit ${formatDateDE(liveState.date)} um ${startStr} Uhr eingestempelt. Wann war wirklich Feierabend?`;
+        document.getElementById('forgot-modal').classList.add('open');
+      }
+    }
+
+    function resolveForgot(timeStr) {
+      if (!timeStr) return;
+      document.getElementById('forgot-modal').classList.remove('open');
+      handleStop(timeStr);
+    }
+
+    function updateLiveUI() {
+      const btnStart = document.getElementById('btn-start');
+      const btnPause = document.getElementById('btn-pause');
+      const btnStop = document.getElementById('btn-stop');
+      const statusEl = document.getElementById('timer-status');
+
+      if (!liveState) {
+        btnStart.disabled = false;
+        btnPause.disabled = true;
+        btnStop.disabled = true;
+        btnPause.textContent = '⏸ Pause';
+        statusEl.textContent = 'Bereit zum Start';
+        statusEl.className = 'timer-status';
+        document.getElementById('live-clock').textContent = '00:00:00';
+        return;
+      }
+
+      btnStart.disabled = true;
+      btnPause.disabled = false;
+      btnStop.disabled = false;
+      if (liveState.note && !document.getElementById('live-note').value) {
+        document.getElementById('live-note').value = liveState.note;
+      }
+
+      const sd = new Date(liveState.startTs);
+      const startTxt = pad2(sd.getHours()) + ':' + pad2(sd.getMinutes());
+
+      if (liveState.pauseStartTs) {
+        btnPause.textContent = '▶ Pause weiter';
+        statusEl.textContent = `In Pause (Start: ${startTxt} Uhr)`;
+        statusEl.className = 'timer-status paused';
+      } else {
+        btnPause.textContent = '⏸ Pause';
+        statusEl.textContent = `Läuft seit ${startTxt} Uhr`;
+        statusEl.className = 'timer-status active';
+      }
+      updateLiveClock();
+    }
+
+    function updateLiveClock() {
+      if (!liveState) return;
+      const now = Date.now();
+      let paused = liveState.pausedTotalMs;
+      if (liveState.pauseStartTs) paused += (now - liveState.pauseStartTs);
+      const netMs = Math.max(0, now - liveState.startTs - paused);
+      const totalSec = Math.floor(netMs / 1000);
+      const h = Math.floor(totalSec / 3600);
+      const m = Math.floor((totalSec % 3600) / 60);
+      const s = totalSec % 60;
+      document.getElementById('live-clock').textContent = `${pad2(h)}:${pad2(m)}:${pad2(s)}`;
+    }
+
+    function toggleManualFields() {
+      const st = document.getElementById('m-status').value;
+      document.getElementById('time-fields').style.display = (st === 'Arbeit') ? 'block' : 'none';
+    }
+
+    function saveManualEntry() {
+      const date = document.getElementById('m-date').value;
+      const status = document.getElementById('m-status').value;
+      if (!date) {
+        showToast('Bitte ein Datum wählen');
+        return;
+      }
+
+      const editId = document.getElementById('edit-id').value;
+      const entry = {
+        id: editId || ('id_' + Date.now()),
+        date,
+        status,
+        start: status === 'Arbeit' ? document.getElementById('m-start').value : '',
+        end: status === 'Arbeit' ? document.getElementById('m-end').value : '',
+        pauseMin: status === 'Arbeit' ? (parseInt(document.getElementById('m-pause').value, 10) || 0) : 0,
+        note: status === 'Arbeit' ? document.getElementById('m-note').value.trim() : status
+      };
+
+      if (editId) {
+        const idx = entries.findIndex(e => e.id === editId);
+        if (idx !== -1) entries[idx] = entry;
+        showToast('Eintrag aktualisiert');
+      } else {
+        entries.push(entry);
+        showToast('Tag gespeichert');
+      }
+
+      saveEntries();
+      resetManualForm();
+      renderAll();
+    }
+
+    function editEntry(id) {
+      const e = entries.find(x => x.id === id);
+      if (!e) return;
+      switchTab('timer', document.querySelectorAll('.nav-btn')[0]);
+      document.getElementById('edit-id').value = e.id;
+      document.getElementById('m-date').value = e.date;
+      document.getElementById('m-status').value = e.status || 'Arbeit';
+      toggleManualFields();
+      if (e.status === 'Arbeit') {
+        document.getElementById('m-start').value = e.start || '07:30';
+        document.getElementById('m-end').value = e.end || '16:30';
+        document.getElementById('m-pause').value = e.pauseMin || 0;
+        document.getElementById('m-note').value = e.note || '';
+      }
+      document.getElementById('form-mode-title').textContent = 'Eintrag bearbeiten';
+      document.getElementById('btn-cancel-edit').style.display = 'inline-flex';
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    function deleteEntry(id, ev) {
+      if (ev) ev.stopPropagation();
+      if (!confirm('Diesen Eintrag wirklich löschen?')) return;
+      entries = entries.filter(e => e.id !== id);
+      saveEntries();
+      renderAll();
+      showToast('Eintrag gelöscht');
+    }
+
+    function resetManualForm() {
+      document.getElementById('edit-id').value = '';
+      document.getElementById('m-status').value = 'Arbeit';
+      document.getElementById('m-note').value = '';
+      document.getElementById('form-mode-title').textContent = 'Tag manuell eintragen / korrigieren';
+      document.getElementById('btn-cancel-edit').style.display = 'none';
+      toggleManualFields();
+    }
+
+    function saveEntries() {
+      entries.sort((a, b) => a.date.localeCompare(b.date));
+      localStorage.setItem(KEY_ENTRIES, JSON.stringify(entries));
+      const infoEl = document.getElementById('storage-info');
+      if (infoEl) infoEl.textContent = `Gespeicherte Tage: ${entries.length}`;
+    }
+
+    function calcEntryMetrics(e) {
+      const dailySoll = (settings.weekly || 40) / 5;
+      const d = new Date(e.date + 'T12:00:00');
+      const dayOfWeek = d.getDay();
+      const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+      if (e.status === 'Urlaub' || e.status === 'Krank' || e.status === 'Feiertag') {
+        const soll = isWeekend ? 0 : dailySoll;
+        return { netHours: soll, sollHours: soll, diff: 0, spesen: 0, absenceHours: 0 };
+      }
+      if (e.status === 'Frei') {
+        return { netHours: 0, sollHours: 0, diff: 0, spesen: 0, absenceHours: 0 };
+      }
+
+      const startMin = timeToMin(e.start);
+      let endMin = timeToMin(e.end);
+      if (endMin < startMin) endMin += 1440;
+      const absenceMin = Math.max(0, endMin - startMin);
+      const netMin = Math.max(0, absenceMin - (e.pauseMin || 0));
+
+      const netHours = netMin / 60;
+      const absenceHours = absenceMin / 60;
+      const sollHours = isWeekend ? 0 : dailySoll;
+      const diff = netHours - sollHours;
+      const spesen = absenceHours > 8 ? 14 : 0;
+
+      return { netHours, sollHours, diff, spesen, absenceHours };
+    }
+
+    function getMonthStats(ym) {
+      const monthEntries = entries.filter(e => e.date && e.date.startsWith(ym));
+      let ist = 0, soll = 0, spesen = 0, spesenDays = 0;
+
+      monthEntries.forEach(e => {
+        const m = calcEntryMetrics(e);
+        ist += m.netHours;
+        soll += m.sollHours;
+        if (m.spesen > 0) {
+          spesen += m.spesen;
+          spesenDays += 1;
+        }
+      });
+
+      const rawDiff = ist - soll;
+      const plusHours = Math.max(0, rawDiff) + (parseFloat(settings.carry) || 0);
+      const realWage = ist > 0 ? (settings.gross / ist) : 0;
+
+      return { monthEntries, ist, soll, plusHours, realWage, spesen, spesenDays };
+    }
+
+    function renderAll() {
+      const ym = document.getElementById('month-picker').value || toLocalDateStr(new Date()).slice(0, 7);
+      const st = getMonthStats(ym);
+
+      document.getElementById('kpi-ist').textContent = fmtNum(st.ist) + ' Std.';
+      document.getElementById('kpi-soll').textContent = `Soll (Mo–Fr): ${fmtNum(st.soll)} Std.`;
+      document.getElementById('kpi-plus').textContent = '+' + fmtNum(st.plusHours) + ' Std.';
+
+      const wageEl = document.getElementById('kpi-wage');
+      const minEl = document.getElementById('kpi-minwage');
+      if (st.ist > 0) {
+        wageEl.textContent = fmtNum(st.realWage) + ' €';
+        if (st.realWage < MIN_WAGE_2026) {
+          wageEl.className = 'kpi-val text-red';
+          minEl.textContent = `⚠️ Unter Mindestlohn (${fmtNum(MIN_WAGE_2026)} €)`;
+        } else {
+          wageEl.className = 'kpi-val text-blue';
+          minEl.textContent = `Basis: ${fmtNum(settings.gross)} € Brutto`;
+        }
+      } else {
+        wageEl.textContent = '—';
+        minEl.textContent = `Basis: ${fmtNum(settings.gross)} € Brutto`;
+      }
+
+      document.getElementById('kpi-spesen').textContent = fmtNum(st.spesen) + ' €';
+      document.getElementById('kpi-spesen-days').textContent = `${st.spesenDays} Tage à 14 €`;
+
+      const list = document.getElementById('entries-list');
+      if (st.monthEntries.length === 0) {
+        list.innerHTML = '<div style="color:var(--muted); font-size:13px; text-align:center; padding:16px;">Noch keine Einträge für diesen Monat.</div>';
+        return;
+      }
+
+      list.innerHTML = st.monthEntries.slice().reverse().map(e => {
+        const m = calcEntryMetrics(e);
+        const diffTxt = m.diff >= 0 ? `+${fmtNum(m.diff)} h` : `${fmtNum(m.diff)} h`;
+        const badgeCls = m.diff > 0 ? 'badge-plus' : 'badge-neutral';
+        const timeInfo = e.status === 'Arbeit'
+          ? `${e.start} – ${e.end} (${e.pauseMin}m Pause)`
+          : e.status;
+
+        return `
+          <div class="entry-item" onclick="editEntry('${e.id}')">
+            <div>
+              <div class="entry-date">${formatDateWithDay(e.date)}</div>
+              <div class="entry-meta">${timeInfo}${e.note && e.note !== e.status ? ' • ' + escapeHtml(e.note) : ''}</div>
+            </div>
+            <div class="entry-hours">
+              <div style="font-weight:800; font-size:15px;">${fmtNum(m.netHours)} Std.</div>
+              <div style="margin-top:3px;">
+                <span class="badge ${badgeCls}">${diffTxt}</span>
+                ${m.spesen > 0 ? '<span class="badge badge-spesen">+14€</span>' : ''}
+                <button type="button" onclick="deleteEntry('${e.id}', event)" style="background:none; border:none; color:#f87171; font-size:13px; margin-left:6px;">🗑</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderYearView() {
+      const year = document.getElementById('year-picker').value || String(new Date().getFullYear());
+      const monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+
+      let totIst = 0, totSoll = 0, totPlus = 0, totSpesen = 0, totSpesenDays = 0, activeMonths = 0, wageSum = 0;
+      let html = '';
+
+      for (let m = 1; m <= 12; m++) {
+        const ym = `${year}-${pad2(m)}`;
+        const monthEntries = entries.filter(e => e.date && e.date.startsWith(ym));
+        let ist = 0, soll = 0, spesen = 0;
+
+        monthEntries.forEach(e => {
+          const met = calcEntryMetrics(e);
+          ist += met.netHours;
+          soll += met.sollHours;
+          if (met.spesen > 0) {
+            spesen += met.spesen;
+            totSpesenDays += 1;
+          }
+        });
+
+        const plus = Math.max(0, ist - soll);
+        totIst += ist;
+        totSoll += soll;
+        totPlus += plus;
+        totSpesen += spesen;
+
+        if (ist > 0) {
+          activeMonths++;
+          wageSum += (settings.gross / ist);
+        }
+
+        html += `
+          <div class="entry-item">
+            <div>
+              <div class="entry-date">${monthNames[m - 1]} ${year}</div>
+              <div class="entry-meta">Ist: ${fmtNum(ist)} Std. • Spesen: ${fmtNum(spesen)} €</div>
+            </div>
+            <div class="entry-hours">
+              <span class="badge ${plus > 0 ? 'badge-plus' : 'badge-neutral'}">+${fmtNum(plus)} Std.</span>
+            </div>
+          </div>
+        `;
+      }
+
+      document.getElementById('yr-ist').textContent = fmtNum(totIst) + ' Std.';
+      document.getElementById('yr-soll').textContent = `Soll: ${fmtNum(totSoll)} Std.`;
+      document.getElementById('yr-plus').textContent = '+' + fmtNum(totPlus) + ' Std.';
+      document.getElementById('yr-wage').textContent = activeMonths > 0 ? fmtNum(wageSum / activeMonths) + ' €' : '—';
+      document.getElementById('yr-spesen').textContent = fmtNum(totSpesen) + ' €';
+      document.getElementById('yr-spesen-days').textContent = `${totSpesenDays} Einsatztage > 8h`;
+      document.getElementById('year-months-list').innerHTML = html;
+    }
+
+    function openSheetPreview() {
+      const ym = document.getElementById('month-picker').value;
+      const st = getMonthStats(ym);
+      const [y, m] = ym.split('-');
+      const monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+      const monthTitle = `${monthNames[parseInt(m, 10) - 1]} ${y}`;
+
+      const rowsHtml = st.monthEntries.map(e => {
+        const met = calcEntryMetrics(e);
+        const diffStr = met.diff >= 0 ? `+${fmtNum(met.diff)} h` : `${fmtNum(met.diff)} h`;
+        return `
+          <tr>
+            <td>${formatDateWithDay(e.date)}</td>
+            <td>${escapeHtml(e.status)}</td>
+            <td>${e.status === 'Arbeit' ? e.start : '—'}</td>
+            <td>${e.status === 'Arbeit' ? e.end : '—'}</td>
+            <td>${e.status === 'Arbeit' ? e.pauseMin + ' Min.' : '—'}</td>
+            <td><strong>${fmtNum(met.netHours)} h</strong></td>
+            <td>${fmtNum(met.sollHours)} h</td>
+            <td>${diffStr}</td>
+            <td>${escapeHtml(e.note || '')}</td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('sheet-content').innerHTML = `
+        <div class="sheet-head">
+          <div>
+            <div style="font-size:11px; font-weight:800; color:#0284c7; letter-spacing:0.5px;">${escapeHtml(settings.company).toUpperCase()} • ARBEITSZEITNACHWEIS</div>
+            <div style="font-size:20px; font-weight:800; margin-top:2px;">Stundenzettel ${monthTitle}</div>
+            <div style="font-size:12px; color:#334155; margin-top:4px;">
+              Mitarbeiter: <strong>${escapeHtml(settings.name || 'Nicht hinterlegt')}</strong>
+              ${settings.persnr ? ' • Pers.-Nr.: ' + escapeHtml(settings.persnr) : ''}
+            </div>
+          </div>
+          <div style="font-size:11px; color:#475569; text-align:right;">
+            <div>Regelarbeitszeit: ${settings.weekly} Std./Woche</div>
+            <div>Erstellt am: ${formatDateDE(toLocalDateStr(new Date()))}</div>
+          </div>
+        </div>
+
+        <div class="sheet-kpis">
+          <div class="sheet-kpi">
+            <div class="sheet-kpi-label">Geleistete Netto-Stunden</div>
+            <div class="sheet-kpi-val">${fmtNum(st.ist)} Std.</div>
+          </div>
+          <div class="sheet-kpi">
+            <div class="sheet-kpi-label">Soll-Stunden (Mo–Fr)</div>
+            <div class="sheet-kpi-val">${fmtNum(st.soll)} Std.</div>
+          </div>
+          <div class="sheet-kpi" style="background:#ecfdf5; border-color:#6ee7b7;">
+            <div class="sheet-kpi-label" style="color:#047857;">Überstunden / Plus-Saldo</div>
+            <div class="sheet-kpi-val" style="color:#065f46;">+${fmtNum(st.plusHours)} Std.</div>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="sheet-table">
+            <thead>
+              <tr>
+                <th>Datum</th>
+                <th>Status</th>
+                <th>Beginn</th>
+                <th>Ende</th>
+                <th>Pause</th>
+                <th>Netto-Ist</th>
+                <th>Soll</th>
+                <th>Differenz</th>
+                <th>Einsatzort / Notiz</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rowsHtml || '<tr><td colspan="9" style="text-align:center; padding:14px;">Keine Einträge in diesem Monat</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+
+        <div class="sign-row">
+          <div class="sign-line">Datum, Unterschrift Mitarbeiter</div>
+          <div class="sign-line">Datum, Unterschrift Vorgesetzter</div>
+        </div>
+      `;
+
+      document.getElementById('sheet-modal').classList.add('open');
+    }
+
+    function closeSheetPreview() {
+      document.getElementById('sheet-modal').classList.remove('open');
+    }
+
+    // HIGH-DPI CANVAS-ZU-PDF GENERATOR (EXAKT WIE VORSCHAU, 100% OFFLINE & iOS-SICHER)
+    function downloadRenderedPDF() {
+      const ym = document.getElementById('month-picker').value;
+      const st = getMonthStats(ym);
+      const [y, m] = ym.split('-');
+      const monthNames = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+      const monthTitle = `${monthNames[parseInt(m, 10) - 1]} ${y}`;
+
+      // DIN-A4 bei 150 DPI (1240 x 1754 px)
+      const W = 1240;
+      const H = 1754;
+      const M = 70;
+      const rowsPerPage = 26;
+      const chunks = [];
+
+      if (st.monthEntries.length === 0) {
+        chunks.push([]);
+      } else {
+        for (let i = 0; i < st.monthEntries.length; i += rowsPerPage) {
+          chunks.push(st.monthEntries.slice(i, i + rowsPerPage));
+        }
+      }
+
+      const jpegPages = chunks.map((pageRows, pageIdx) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = W;
+        canvas.height = H;
+        const ctx = canvas.getContext('2d');
+
+        // Weißer Hintergrund
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, W, H);
+
+        // Kopfzeile
+        ctx.fillStyle = '#0284c7';
+        ctx.font = 'bold 20px -apple-system, Helvetica, Arial, sans-serif';
+        ctx.fillText(`${settings.company.toUpperCase()} • ARBEITSZEITNACHWEIS`, M, 85);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = 'bold 42px -apple-system, Helvetica, Arial, sans-serif';
+        ctx.fillText(`Stundenzettel ${monthTitle}`, M, 138);
+
+        ctx.fillStyle = '#334155';
+        ctx.font = '22px -apple-system, Helvetica, Arial, sans-serif';
+        const subLine = `Mitarbeiter: ${settings.name || 'Nicht hinterlegt'}${settings.persnr ? '  •  Pers.-Nr.: ' + settings.persnr : ''}`;
+        ctx.fillText(subLine, M, 178);
+
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#475569';
+        ctx.font = '20px -apple-system, Helvetica, Arial, sans-serif';
+        ctx.fillText(`Regelarbeitszeit: ${settings.weekly} Std./Woche`, W - M, 132);
+        ctx.fillText(`Erstellt am: ${formatDateDE(toLocalDateStr(new Date()))}  (Seite ${pageIdx + 1}/${chunks.length})`, W - M, 165);
+        ctx.textAlign = 'left';
+
+        // Trennlinie
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(M, 205);
+        ctx.lineTo(W - M, 205);
+        ctx.stroke();
+
+        // 3 KPI-Karten
+        const boxW = (W - M * 2 - 40) / 3;
+        const boxY = 228;
+        const boxH = 105;
+
+        const kpis = [
+          { label: 'Geleistete Netto-Stunden', val: `${fmtNum(st.ist)} Std.`, bg: '#f8fafc', border: '#cbd5e1', color: '#0f172a' },
+          { label: 'Soll-Stunden (Mo–Fr)', val: `${fmtNum(st.soll)} Std.`, bg: '#f8fafc', border: '#cbd5e1', color: '#0f172a' },
+          { label: 'Überstunden / Plus-Saldo', val: `+${fmtNum(st.plusHours)} Std.`, bg: '#ecfdf5', border: '#6ee7b7', color: '#065f46' }
+        ];
+
+        kpis.forEach((k, idx) => {
+          const bx = M + idx * (boxW + 20);
+          ctx.fillStyle = k.bg;
+          ctx.strokeStyle = k.border;
+          ctx.lineWidth = 2;
+          ctx.fillRect(bx, boxY, boxW, boxH);
+          ctx.strokeRect(bx, boxY, boxW, boxH);
+
+          ctx.fillStyle = '#475569';
+          ctx.font = 'bold 18px -apple-system, Helvetica, Arial, sans-serif';
+          ctx.fillText(k.label, bx + 18, boxY + 36);
+
+          ctx.fillStyle = k.color;
+          ctx.font = 'bold 34px -apple-system, Helvetica, Arial, sans-serif';
+          ctx.fillText(k.val, bx + 18, boxY + 82);
+        });
+
+        // Tabellenkopf
+        let ty = 365;
+        const rowH = 42;
+        const cols = [
+          { label: 'Datum', x: M + 12 },
+          { label: 'Status', x: M + 215 },
+          { label: 'Beginn', x: M + 340 },
+          { label: 'Ende', x: M + 440 },
+          { label: 'Pause', x: M + 535 },
+          { label: 'Netto-Ist', x: M + 635 },
+          { label: 'Soll', x: M + 765 },
+          { label: 'Diff.', x: M + 870 },
+          { label: 'Einsatzort / Notiz', x: M + 975 }
+        ];
+
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillRect(M, ty, W - M * 2, rowH);
+        ctx.strokeStyle = '#cbd5e1';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(M, ty, W - M * 2, rowH);
+
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 18px -apple-system, Helvetica, Arial, sans-serif';
+        cols.forEach(c => ctx.fillText(c.label, c.x, ty + 28));
+
+        ty += rowH;
+
+        // Tabellenzeilen
+        pageRows.forEach(e => {
+          const met = calcEntryMetrics(e);
+          const diffStr = (met.diff >= 0 ? '+' : '') + fmtNum(met.diff) + ' h';
+
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(M, ty, W - M * 2, rowH);
+          ctx.strokeStyle = '#e2e8f0';
+          ctx.strokeRect(M, ty, W - M * 2, rowH);
+
+          ctx.fillStyle = '#0f172a';
+          ctx.font = '18px -apple-system, Helvetica, Arial, sans-serif';
+          ctx.fillText(formatDateWithDay(e.date), cols[0].x, ty + 28);
+          ctx.fillText(e.status, cols[1].x, ty + 28);
+          ctx.fillText(e.status === 'Arbeit' ? e.start : '—', cols[2].x, ty + 28);
+          ctx.fillText(e.status === 'Arbeit' ? e.end : '—', cols[3].x, ty + 28);
+          ctx.fillText(e.status === 'Arbeit' ? e.pauseMin + 'm' : '—', cols[4].x, ty + 28);
+
+          ctx.font = 'bold 18px -apple-system, Helvetica, Arial, sans-serif';
+          ctx.fillText(fmtNum(met.netHours) + ' h', cols[5].x, ty + 28);
+
+          ctx.font = '18px -apple-system, Helvetica, Arial, sans-serif';
+          ctx.fillText(fmtNum(met.sollHours) + ' h', cols[6].x, ty + 28);
+          ctx.fillText(diffStr, cols[7].x, ty + 28);
+          ctx.fillText((e.note || '').slice(0, 14), cols[8].x, ty + 28);
+
+          ty += rowH;
+        });
+
+        // Unterschriftsfelder auf der letzten Seite
+        if (pageIdx === chunks.length - 1) {
+          const signY = Math.max(ty + 110, H - 150);
+          ctx.strokeStyle = '#334155';
+          ctx.lineWidth = 2;
+
+          ctx.beginPath();
+          ctx.moveTo(M, signY);
+          ctx.lineTo(M + 460, signY);
+          ctx.stroke();
+
+          ctx.beginPath();
+          ctx.moveTo(W - M - 460, signY);
+          ctx.lineTo(W - M, signY);
+          ctx.stroke();
+
+          ctx.fillStyle = '#475569';
+          ctx.font = '19px -apple-system, Helvetica, Arial, sans-serif';
+          ctx.fillText('Datum, Unterschrift Mitarbeiter', M, signY + 30);
+          ctx.fillText('Datum, Unterschrift Vorgesetzter', W - M - 460, signY + 30);
+        }
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const binStr = atob(dataUrl.split(',')[1]);
+        const bytes = new Uint8Array(binStr.length);
+        for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+        return { bytes, width: W, height: H };
+      });
+
+      const pdfBytes = buildImagePDF(jpegPages);
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      triggerFileSave(blob, `Stundenzettel_${ym}.pdf`);
+    }
+
+    function buildImagePDF(jpegPages) {
+      const chunks = [];
+      const offsets = [0];
+      let byteLen = 0;
+
+      const pushStr = (s) => {
+        const arr = new Uint8Array(s.length);
+        for (let i = 0; i < s.length; i++) arr[i] = s.charCodeAt(i) & 0xff;
+        chunks.push(arr);
+        byteLen += arr.length;
+      };
+
+      const pushBytes = (arr) => {
+        chunks.push(arr);
+        byteLen += arr.length;
+      };
+
+      pushStr('%PDF-1.4\n');
+
+      // Objekt 1: Catalog, Objekt 2: Pages
+      const totalObjs = 2 + jpegPages.length * 3;
+      const pageObjIds = [];
+      for (let i = 0; i < jpegPages.length; i++) {
+        pageObjIds.push(3 + i * 3);
+      }
+
+      offsets[1] = byteLen;
+      pushStr('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+
+      offsets[2] = byteLen;
+      pushStr(`2 0 obj\n<< /Type /Pages /Kids [${pageObjIds.map(id => id + ' 0 R').join(' ')}] /Count ${jpegPages.length} >>\nendobj\n`);
+
+      jpegPages.forEach((pg, idx) => {
+        const pId = 3 + idx * 3;
+        const cId = pId + 1;
+        const imgId = pId + 2;
+
+        offsets[pId] = byteLen;
+        pushStr(`${pId} 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595.28 841.89] /Resources << /XObject << /Im0 ${imgId} 0 R >> >> /Contents ${cId} 0 R >>\nendobj\n`);
+
+        const stream = 'q 595.28 0 0 841.89 0 0 cm /Im0 Do Q';
+        offsets[cId] = byteLen;
+        pushStr(`${cId} 0 obj\n<< /Length ${stream.length} >>\nstream\n${stream}\nendstream\nendobj\n`);
+
+        offsets[imgId] = byteLen;
+        pushStr(`${imgId} 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pg.width} /Height ${pg.height} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${pg.bytes.length} >>\nstream\n`);
+        pushBytes(pg.bytes);
+        pushStr('\nendstream\nendobj\n');
+      });
+
+      const xrefPos = byteLen;
+      pushStr(`xref\n0 ${totalObjs + 1}\n`);
+      pushStr('0000000000 65535 f \n');
+      for (let i = 1; i <= totalObjs; i++) {
+        pushStr(String(offsets[i]).padStart(10, '0') + ' 00000 n \n');
+      }
+      pushStr(`trailer\n<< /Size ${totalObjs + 1} /Root 1 0 R >>\nstartxref\n${xrefPos}\n%%EOF`);
+
+      const finalPdf = new Uint8Array(byteLen);
+      let pos = 0;
+      chunks.forEach(c => {
+        finalPdf.set(c, pos);
+        pos += c.length;
+      });
+      return finalPdf;
+    }
+
+    function exportCSV() {
+      const ym = document.getElementById('month-picker').value;
+      const st = getMonthStats(ym);
+      const rows = [
+        ['Datum', 'Status', 'Beginn', 'Ende', 'Pause (Min)', 'Netto-Ist (Std)', 'Soll (Std)', 'Differenz (Std)', 'Spesen (EUR)', 'Einsatzort / Notiz']
+      ];
+
+      st.monthEntries.forEach(e => {
+        const m = calcEntryMetrics(e);
+        rows.push([
+          formatDateDE(e.date),
+          e.status,
+          e.start || '',
+          e.end || '',
+          e.pauseMin || 0,
+          fmtNum(m.netHours),
+          fmtNum(m.sollHours),
+          fmtNum(m.diff),
+          fmtNum(m.spesen),
+          (e.note || '').replace(/;/g, ',')
+        ]);
+      });
+
+      rows.push([]);
+      rows.push(['GESAMT', '', '', '', '', fmtNum(st.ist), fmtNum(st.soll), '+' + fmtNum(st.plusHours), fmtNum(st.spesen), '']);
+
+      const csvContent = '\uFEFF' + rows.map(r => r.join(';')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      triggerFileSave(blob, `Stundenzettel_${ym}.csv`);
+    }
+
+    function exportBackup() {
+      const payload = JSON.stringify({ entries, settings, exportedAt: new Date().toISOString() }, null, 2);
+      const blob = new Blob([payload], { type: 'application/json' });
+      triggerFileSave(blob, `AD_Log_Backup_${toLocalDateStr(new Date())}.json`);
+    }
+
+    function importBackup(ev) {
+      const file = ev.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (Array.isArray(data.entries)) {
+            entries = data.entries;
+            saveEntries();
+          }
+          if (data.settings) {
+            settings = { ...settings, ...data.settings };
+            localStorage.setItem(KEY_SETTINGS, JSON.stringify(settings));
+            fillSettingsUI();
+          }
+          renderAll();
+          showToast('Backup erfolgreich wiederhergestellt');
+        } catch (err) {
+          showToast('Fehler beim Laden der Datei');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    async function triggerFileSave(blob, filename) {
+      const file = new File([blob], filename, { type: blob.type });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title: filename });
+          return;
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+        }
+      }
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => {
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }, 400);
+      showToast(`${filename} gespeichert`);
+    }
+
+    async function shareAppLink() {
+      const url = window.location.href.split('#')[0];
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: 'Außendienst Logbuch - TC Norden',
+            text: 'Hier ist unsere Stempeluhr & Stundenzettel-App:',
+            url: url
+          });
+          return;
+        } catch (e) {}
+      }
+      if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        showToast('App-Link kopiert!');
+      }
+    }
+
+    function runWageCalc() {
+      const gross = parseFloat(document.getElementById('calc-gross').value) || 0;
+      const hours = parseFloat(document.getElementById('calc-hours').value) || 0;
+      const box = document.getElementById('calc-result');
+      if (hours <= 0) {
+        box.innerHTML = '<div class="kpi-label">Bitte Stunden eingeben</div>';
+        return;
+      }
+      const wage = gross / hours;
+      const under = wage < MIN_WAGE_2026;
+      box.innerHTML = `
+        <div class="kpi-label">Effektiver Brutto-Stundenlohn</div>
+        <div class="kpi-val ${under ? 'text-red' : 'text-green'}">${fmtNum(wage)} € / Std.</div>
+        <div class="kpi-sub">${under ? '⚠️ Unter gesetzlichem Mindestlohn (' + fmtNum(MIN_WAGE_2026) + ' €)' : 'Über gesetzlichem Mindestlohn (' + fmtNum(MIN_WAGE_2026) + ' €)'}</div>
+      `;
+    }
+
+    function toLocalDateStr(d) {
+      return `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+    }
+
+    function formatDateDE(iso) {
+      if (!iso) return '';
+      const [y, m, d] = iso.split('-');
+      return `${d}.${m}.${y}`;
+    }
+
+    function formatDateWithDay(iso) {
+      const days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+      const d = new Date(iso + 'T12:00:00');
+      return `${formatDateDE(iso)} (${days[d.getDay()]})`;
+    }
+
+    function timeToMin(t) {
+      if (!t) return 0;
+      const [h, m] = t.split(':').map(Number);
+      return (h || 0) * 60 + (m || 0);
+    }
+
+    function fmtNum(n) {
+      return (Number(n) || 0).toFixed(2).replace('.', ',');
+    }
+
+    function pad2(n) {
+      return String(n).padStart(2, '0');
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/[&<>"']/g, s => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[s]));
+    }
+
+    init();
+  </script>
+</body>
+</html>
