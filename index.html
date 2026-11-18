@@ -1,0 +1,2010 @@
+<!DOCTYPE html>
+<html lang="de" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Außendienst Logbuch - TC Norden</title>
+
+    <!-- iOS & Android Web-App / Homescreen Konfiguration -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="AD-Log">
+    <meta name="application-name" content="AD-Log">
+    <meta name="theme-color" content="#0f172a">
+
+    <!-- Eingebettetes App-Logo (SVG Data-URI für iPhone & Android Homescreen) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e293b'/%3E%3C/linearGradient%3E%3ClinearGradient id='acc' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2310b981'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' rx='112' fill='url(%23bg)'/%3E%3Ccircle cx='256' cy='268' r='154' fill='none' stroke='url(%23acc)' stroke-width='26'/%3E%3Cpath d='M256 172v96l64 38' fill='none' stroke='%23f8fafc' stroke-width='26' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M186 92a115 115 0 0 1 140 0' fill='none' stroke='%2310b981' stroke-width='20' stroke-linecap='round'/%3E%3Cpath d='M214 122a70 70 0 0 1 84 0' fill='none' stroke='%2338bdf8' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='268' r='16' fill='%2310b981'/%3E%3C/svg%3E">
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%230f172a'/%3E%3Cstop offset='100%25' stop-color='%231e293b'/%3E%3C/linearGradient%3E%3ClinearGradient id='acc' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%2310b981'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='512' height='512' fill='url(%23bg)'/%3E%3Ccircle cx='256' cy='272' r='150' fill='none' stroke='url(%23acc)' stroke-width='26'/%3E%3Cpath d='M256 176v96l64 38' fill='none' stroke='%23f8fafc' stroke-width='26' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M186 94a115 115 0 0 1 140 0' fill='none' stroke='%2310b981' stroke-width='20' stroke-linecap='round'/%3E%3Cpath d='M214 124a70 70 0 0 1 84 0' fill='none' stroke='%2338bdf8' stroke-width='18' stroke-linecap='round'/%3E%3Ccircle cx='256' cy='272' r='16' fill='%2310b981'/%3E%3C/svg%3E">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            padding-bottom: calc(5.8rem + env(safe-area-inset-bottom));
+            padding-top: env(safe-area-inset-top);
+        }
+        button, label, select, input {
+            cursor: pointer;
+        }
+        input[type="text"], input[type="number"], input[type="date"], input[type="time"] {
+            cursor: text;
+        }
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+
+        /* Druck- & PDF-Ansicht für Arbeitgeber-Stundenzettel */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 12mm;
+            }
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                font-size: 10pt;
+            }
+            .no-print {
+                display: none !important;
+            }
+            #print-area {
+                display: block !important;
+                width: 100% !important;
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            table.print-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                margin-bottom: 18px;
+                font-size: 9pt;
+            }
+            table.print-table th, table.print-table td {
+                border: 1px solid #94a3b8;
+                padding: 4px 6px;
+                text-align: left;
+            }
+            table.print-table th {
+                background-color: #f1f5f9 !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-weight: 700;
+            }
+            table.print-table tr.weekend-row {
+                background-color: #f8fafc !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                color: #475569;
+            }
+        }
+        #print-area {
+            display: none;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Toast Benachrichtigungen (ersetzt alert()) -->
+    <div id="toast-container" class="no-print fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-md pointer-events-none flex flex-col gap-2"></div>
+
+    <!-- Header mit  Emblem -->
+    <header class="no-print sticky top-0 z-30 bg-slate-900/95 backdrop-blur border-b border-slate-800 px-4 py-3">
+        <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2.5 min-w-0">
+                <!-- Inline SVG Logo -->
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-emerald-500/40 flex items-center justify-center shrink-0 shadow-md">
+                    <svg class="w-6 h-6" viewBox="0 0 64 64" fill="none">
+                        <path d="M20 12a18 18 0 0 1 24 0" stroke="#10b981" stroke-width="3.2" stroke-linecap="round"/>
+                        <path d="M24.5 16.5a11 11 0 0 1 15 0" stroke="#38bdf8" stroke-width="2.8" stroke-linecap="round"/>
+                        <circle cx="32" cy="36" r="18" stroke="#10b981" stroke-width="3.5"/>
+                        <path d="M32 25v11l7.5 4.5" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle cx="32" cy="36" r="2.2" fill="#10b981"/>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <div class="flex items-center gap-1.5">
+                        <h1 class="font-bold text-sm sm:text-base leading-tight text-white truncate">Außendienst Logbuch</h1>
+                        <span class="text-[10px] font-bold text-emerald-400 bg-emerald-500/15 border border-emerald-500/30 px-1.5 py-0.5 rounded-md shrink-0">TC Norden</span>
+                    </div>
+                    <p id="header-user-subtitle" class="text-xs text-slate-400 truncate">Mitarbeiterprofil laden...</p>
+                </div>
+            </div>
+
+            <button type="button" onclick="shareApp()" class="shrink-0 flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 active:scale-95 transition text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl border border-slate-700">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path>
+                </svg>
+                <span>Teilen</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hauptbereich -->
+    <main class="no-print max-w-3xl mx-auto px-4 pt-4">
+
+        <!-- ========================================================= -->
+        <!-- TAB 1: STEMPELUHR (LIVE TIME CLOCK)                       -->
+        <!-- ========================================================= -->
+        <section id="tab-clock" class="space-y-4">
+
+            <!-- Live Status Karte -->
+            <div class="bg-slate-800/85 border border-slate-700/80 rounded-2xl p-5 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <span id="clock-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-700 text-slate-300">
+                        <span class="w-2 h-2 rounded-full bg-slate-400"></span>
+                        Bereit zum Start
+                    </span>
+                    <span id="live-date-display" class="text-xs font-medium text-slate-400"></span>
+                </div>
+
+                <div class="text-center py-3">
+                    <div id="live-work-timer" class="text-4xl sm:text-5xl font-extrabold tracking-tight font-mono text-white">00:00:00</div>
+                    <p class="text-xs text-slate-400 mt-1">Netto-Arbeitszeit heute</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-slate-700/70 text-center">
+                    <div class="bg-slate-900/70 rounded-xl p-2.5">
+                        <div class="text-[11px] text-slate-400">Beginn</div>
+                        <div id="live-start-time" class="text-sm font-bold text-slate-200 mt-0.5">--:--</div>
+                    </div>
+                    <div class="bg-slate-900/70 rounded-xl p-2.5">
+                        <div class="text-[11px] text-slate-400">Pause</div>
+                        <div id="live-pause-time" class="text-sm font-bold text-amber-400 mt-0.5">0 Min.</div>
+                    </div>
+                    <div class="bg-slate-900/70 rounded-xl p-2.5">
+                        <div class="text-[11px] text-slate-400">Abwesenheit</div>
+                        <div id="live-absence-time" class="text-sm font-bold text-blue-400 mt-0.5">0:00 h</div>
+                    </div>
+                </div>
+
+                <!-- Spesen Live Hinweis ab > 8h -->
+                <div id="live-spesen-banner" class="hidden mt-3 bg-emerald-500/15 border border-emerald-500/30 rounded-xl px-3 py-2 flex items-center justify-between text-xs">
+                    <span class="text-emerald-300 font-medium">Über 8 Std. unterwegs (Spesen-Schwelle erreicht):</span>
+                    <span class="font-bold text-emerald-400">+14,00 €</span>
+                </div>
+            </div>
+
+            <!-- Einsatzort / Notiz -->
+            <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-4">
+                <label for="live-note-input" class="block text-xs font-semibold text-slate-300 mb-1.5">Einsatzort / Aufträge / Tour</label>
+                <input type="text" id="live-note-input" placeholder="z. B. Entstörung Ostfriesland, 4 Aufträge..."
+                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500 transition">
+            </div>
+
+            <!-- Große Daumen-Buttons -->
+            <div id="clock-controls" class="grid grid-cols-1 gap-3">
+                <button type="button" id="btn-clock-in" onclick="clockIn()" class="w-full py-4 px-6 rounded-2xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] transition text-slate-950 font-extrabold text-lg shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2.5">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Arbeitsbeginn stempeln
+                </button>
+
+                <div id="active-shift-buttons" class="hidden grid grid-cols-2 gap-3">
+                    <button type="button" id="btn-pause-toggle" onclick="togglePause()" class="py-4 px-4 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-[0.98] transition text-slate-950 font-bold text-base shadow-lg shadow-amber-500/15 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span id="btn-pause-text">Pause Start</span>
+                    </button>
+
+                    <button type="button" id="btn-clock-out" onclick="clockOut()" class="py-4 px-4 rounded-2xl bg-rose-500 hover:bg-rose-400 active:scale-[0.98] transition text-white font-bold text-base shadow-lg shadow-rose-500/20 flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                        </svg>
+                        Feierabend
+                    </button>
+                </div>
+            </div>
+
+            <!-- Schnellaktionen für Nachtragen & Sonder-Tage -->
+            <div class="grid grid-cols-2 gap-2.5 pt-1">
+                <button type="button" onclick="openEntryModal()" class="bg-slate-800 hover:bg-slate-700 active:scale-[0.98] border border-slate-700 text-slate-200 text-xs font-semibold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition">
+                    <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    Schicht nachtragen
+                </button>
+                <button type="button" onclick="openEntryModal(null, 'Urlaub')" class="bg-slate-800 hover:bg-slate-700 active:scale-[0.98] border border-slate-700 text-slate-200 text-xs font-semibold py-3.5 px-4 rounded-xl flex items-center justify-center gap-2 transition">
+                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                    </svg>
+                    Urlaub / Krank
+                </button>
+            </div>
+
+            <!-- Monats-Schnellblick -->
+            <div class="bg-slate-800/50 border border-slate-700/60 rounded-2xl p-4">
+                <div class="flex items-center justify-between mb-2.5">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Aktueller Monat</span>
+                    <button type="button" onclick="switchTab('month')" class="text-xs text-emerald-400 font-semibold hover:underline">Stundenzettel →</button>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-center">
+                    <div class="bg-slate-900/75 p-2.5 rounded-xl">
+                        <div class="text-[11px] text-slate-400">Ist-Stunden</div>
+                        <div id="quick-month-ist" class="text-base font-bold text-white mt-0.5">0,00 h</div>
+                    </div>
+                    <div class="bg-slate-900/75 p-2.5 rounded-xl">
+                        <div class="text-[11px] text-slate-400">Plus-Stunden</div>
+                        <div id="quick-month-diff" class="text-base font-bold text-emerald-400 mt-0.5">+0,00 h</div>
+                    </div>
+                    <div class="bg-slate-900/75 p-2.5 rounded-xl">
+                        <div class="text-[11px] text-slate-400">Real-Lohn/h</div>
+                        <div id="quick-month-wage" class="text-base font-bold text-blue-400 mt-0.5">-- €</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 2: MONAT & ARBEITGEBER-STUNDENZETTEL                  -->
+        <!-- ========================================================= -->
+        <section id="tab-month" class="hidden space-y-4">
+
+            <!-- Monatsauswahl -->
+            <div class="flex items-center justify-between bg-slate-800 border border-slate-700 rounded-2xl p-2.5">
+                <button type="button" onclick="changeMonth(-1)" class="p-2.5 rounded-xl hover:bg-slate-700 active:scale-95 text-slate-300 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center">
+                    <h2 id="current-month-label" class="font-bold text-base text-white">November 2026</h2>
+                    <p id="current-month-days-count" class="text-[11px] text-slate-400">0 erfasste Tage</p>
+                </div>
+                <button type="button" onclick="changeMonth(1)" class="p-2.5 rounded-xl hover:bg-slate-700 active:scale-95 text-slate-300 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+
+            <!-- KPI Übersicht -->
+            <div class="grid grid-cols-2 gap-3">
+                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5">
+                    <div class="text-xs text-slate-400">Geleistet (Ist / Soll)</div>
+                    <div class="mt-1 flex items-baseline gap-1.5">
+                        <span id="kpi-ist-hours" class="text-xl font-extrabold text-white">0,00 h</span>
+                        <span id="kpi-soll-hours" class="text-xs text-slate-400">/ 0,0 h</span>
+                    </div>
+                    <div class="mt-1 text-[11px] text-slate-400">Sa/So = 0h Soll (kein Minus)</div>
+                </div>
+
+                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5">
+                    <div class="text-xs text-slate-400">Überstunden (Monat)</div>
+                    <div id="kpi-overtime" class="mt-1 text-xl font-extrabold text-emerald-400">+0,00 h</div>
+                    <div id="kpi-overtime-total" class="mt-1 text-[11px] text-slate-400">Gesamt (ohne Minus): +0,00 h</div>
+                </div>
+
+                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5">
+                    <div class="text-xs text-slate-400">Real-Stundenlohn</div>
+                    <div id="kpi-real-wage" class="mt-1 text-xl font-extrabold text-blue-400">-- €</div>
+                    <div id="kpi-minwage-status" class="mt-1 text-[11px] text-slate-400">Basis: 2.800 € Brutto</div>
+                </div>
+
+                <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-3.5">
+                    <div class="text-xs text-slate-400">Spesen (>8h Tage)</div>
+                    <div id="kpi-spesen-sum" class="mt-1 text-xl font-extrabold text-amber-400">0,00 €</div>
+                    <div id="kpi-spesen-days" class="mt-1 text-[11px] text-slate-400">0 Tage à 14 €</div>
+                </div>
+            </div>
+
+            <!-- Mindestlohn Warnung -->
+            <div id="minwage-warning-box" class="hidden bg-rose-500/15 border border-rose-500/40 rounded-2xl p-3.5 text-xs text-rose-200 flex items-start gap-2.5">
+                <svg class="w-5 h-5 text-rose-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                </svg>
+                <div>
+                    <p class="font-bold text-rose-300">Achtung: Rechnerisch unter Mindestlohn!</p>
+                    <p class="mt-0.5 leading-relaxed">Durch deine geleisteten Stunden liegt dein effektiver Brutto-Stundenlohn unter dem gesetzlichen Mindestlohn (<span id="warning-minwage-val">13,90 €</span>/Std.).</p>
+                </div>
+            </div>
+
+            <!-- Arbeitgeber Export (ohne URL) -->
+            <div class="bg-slate-800/70 border border-slate-700/80 rounded-2xl p-3.5 space-y-2.5">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-200">Stundenzettel für Arbeitgeber (ohne URL)</span>
+                    <button type="button" onclick="openEntryModal()" class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg font-semibold hover:bg-emerald-500/30 transition">+ Tag</button>
+                </div>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button type="button" onclick="openTimesheetPreview()" class="bg-blue-600 hover:bg-blue-500 active:scale-[0.98] transition text-white font-semibold text-xs py-3.5 px-3 rounded-xl flex items-center justify-center gap-2 shadow">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Stundenzettel / PDF
+                    </button>
+                    <button type="button" onclick="exportCSV()" class="bg-slate-700 hover:bg-slate-600 active:scale-[0.98] transition text-white font-semibold text-xs py-3.5 px-3 rounded-xl flex items-center justify-center gap-2 border border-slate-600">
+                        <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Excel (.CSV) senden
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tagesliste -->
+            <div class="space-y-2.5" id="entries-list-container"></div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 3: JAHRESBILANZ (12-MONATS-ÜBERSICHT)                 -->
+        <!-- ========================================================= -->
+        <section id="tab-year" class="hidden space-y-4">
+
+            <!-- Jahresauswahl -->
+            <div class="flex items-center justify-between bg-slate-800 border border-slate-700 rounded-2xl p-2.5">
+                <button type="button" onclick="changeYear(-1)" class="p-2.5 rounded-xl hover:bg-slate-700 active:scale-95 text-slate-300 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
+                </button>
+                <div class="text-center">
+                    <h2 id="current-year-label" class="font-bold text-base text-white">Jahresbilanz 2026</h2>
+                    <p class="text-[11px] text-slate-400">Gesamtübersicht für Gehaltsgespräch & Nachweis</p>
+                </div>
+                <button type="button" onclick="changeYear(1)" class="p-2.5 rounded-xl hover:bg-slate-700 active:scale-95 text-slate-300 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"></path></svg>
+                </button>
+            </div>
+
+            <!-- Jahres-Gesamtkarte -->
+            <div class="bg-gradient-to-br from-slate-800 to-slate-900 border border-emerald-500/30 rounded-2xl p-4 shadow-lg space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-700/80 pb-2.5">
+                    <div>
+                        <span class="text-[11px] uppercase tracking-wider font-bold text-emerald-400">Jahres-Gesamtsumme</span>
+                        <h3 id="year-summary-title" class="text-sm font-bold text-white mt-0.5">TC Norden – Auswertung</h3>
+                    </div>
+                    <span id="year-active-months-badge" class="text-xs bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg text-slate-300 font-semibold">0 aktive Monate</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2.5 text-center">
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
+                        <div class="text-[11px] text-slate-400">Plus-Stunden</div>
+                        <div id="year-total-overtime" class="text-lg sm:text-xl font-extrabold text-emerald-400 mt-0.5">+0,0 h</div>
+                        <div id="year-overtime-euro" class="text-[10px] text-slate-400 mt-0.5">Wert: ~0 €</div>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
+                        <div class="text-[11px] text-slate-400">Ø Stundenlohn</div>
+                        <div id="year-avg-wage" class="text-lg sm:text-xl font-extrabold text-blue-400 mt-0.5">-- €</div>
+                        <div class="text-[10px] text-slate-400 mt-0.5">Brutto effektiv</div>
+                    </div>
+                    <div class="bg-slate-950/60 border border-slate-800 rounded-xl p-3">
+                        <div class="text-[11px] text-slate-400">Offene Spesen</div>
+                        <div id="year-total-spesen" class="text-lg sm:text-xl font-extrabold text-amber-400 mt-0.5">0 €</div>
+                        <div id="year-spesen-days" class="text-[10px] text-slate-400 mt-0.5">0 Tage >8h</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between text-xs text-slate-400 pt-1">
+                    <span>Geleistete Jahresstunden (Ist / Soll):</span>
+                    <span id="year-ist-soll-text" class="font-bold text-slate-200">0,00 h / 0,00 h</span>
+                </div>
+            </div>
+
+            <!-- 12-Monats-Tabelle -->
+            <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl overflow-hidden">
+                <div class="px-4 py-3 border-b border-slate-700 flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-200">Alle 12 Monate im Detail</span>
+                    <span class="text-[11px] text-slate-400">Tippe auf einen Monat</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-900/80 text-slate-400 border-b border-slate-700">
+                                <th class="py-2.5 px-3 font-semibold">Monat</th>
+                                <th class="py-2.5 px-2.5 font-semibold text-right">Ist / Soll</th>
+                                <th class="py-2.5 px-2.5 font-semibold text-right">Plus-Std.</th>
+                                <th class="py-2.5 px-2.5 font-semibold text-right">Ø Lohn</th>
+                                <th class="py-2.5 px-3 font-semibold text-right">Spesen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="year-months-tbody" class="divide-y divide-slate-700/60">
+                            <!-- Dynamisch per JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 4: STUNDENLOHN-RECHNER                                -->
+        <!-- ========================================================= -->
+        <section id="tab-calculator" class="hidden space-y-4">
+            <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 space-y-4">
+                <div>
+                    <h2 class="text-base font-bold text-white">Stundenlohn- & Überstunden-Check</h2>
+                    <p class="text-xs text-slate-400 mt-0.5">Rechne für dich oder deine Kollegen durch, was bei 10–12 Std.-Tagen wirklich pro Stunde übrig bleibt.</p>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Monatsgehalt Brutto (€)</label>
+                        <input type="number" id="calc-gross" value="2800" step="50" oninput="runWageCalculator()"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-base font-bold text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Tatsächliche Std. / Woche</label>
+                            <input type="number" id="calc-weekly-hours" value="48" step="0.5" oninput="syncCalcFromWeekly()"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-base font-bold text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Oder Std. / Monat</label>
+                            <input type="number" id="calc-monthly-hours" value="208" step="1" oninput="syncCalcFromMonthly()"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-base font-bold text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <span class="block text-[11px] text-slate-400 mb-1.5">Schnellwahl Arbeitszeit:</span>
+                        <div class="grid grid-cols-4 gap-2">
+                            <button type="button" onclick="setCalcWeekly(40)" class="bg-slate-900 hover:bg-slate-700 border border-slate-700 rounded-xl py-2 text-xs font-semibold text-slate-300">40h/Wo<br><span class="text-[10px] text-slate-500">Vertrag</span></button>
+                            <button type="button" onclick="setCalcWeekly(45)" class="bg-slate-900 hover:bg-slate-700 border border-slate-700 rounded-xl py-2 text-xs font-semibold text-slate-300">45h/Wo<br><span class="text-[10px] text-slate-500">9h/Tag</span></button>
+                            <button type="button" onclick="setCalcWeekly(50)" class="bg-slate-900 hover:bg-slate-700 border border-slate-700 rounded-xl py-2 text-xs font-semibold text-amber-400">50h/Wo<br><span class="text-[10px] text-slate-500">10h/Tag</span></button>
+                            <button type="button" onclick="setCalcWeekly(55)" class="bg-slate-900 hover:bg-slate-700 border border-slate-700 rounded-xl py-2 text-xs font-semibold text-rose-400">55h/Wo<br><span class="text-[10px] text-slate-500">11h/Tag</span></button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Außendienst-Tage > 8 Std. im Monat (für Spesen-Vergleich)</label>
+                        <input type="number" id="calc-spesen-days" value="18" min="0" max="31" oninput="runWageCalculator()"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-700 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
+                        <div>
+                            <div class="text-xs text-slate-400">Vertraglicher Stundenlohn (40h/Wo)</div>
+                            <div id="res-contract-wage" class="text-sm font-bold text-slate-300 mt-0.5">16,15 € / Std.</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-slate-400">Dein realer Brutto-Stundenlohn</div>
+                            <div id="res-real-wage" class="text-2xl font-extrabold text-emerald-400 mt-0.5">13,46 € / Std.</div>
+                        </div>
+                    </div>
+
+                    <div id="calc-minwage-alert" class="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-xs text-rose-200"></div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-1">
+                        <div class="bg-slate-800/70 p-3 rounded-xl">
+                            <div class="text-[11px] text-slate-400">Unbezahlte Mehrarbeit / Monat</div>
+                            <div id="res-unpaid-hours" class="text-sm font-bold text-rose-400 mt-0.5">+34,7 Std.</div>
+                            <div id="res-unpaid-value" class="text-[11px] text-slate-400 mt-0.5">Wert: ~560 € Brutto</div>
+                        </div>
+                        <div class="bg-slate-800/70 p-3 rounded-xl">
+                            <div class="text-[11px] text-slate-400">Entgangene Spesen (14 €/Tag)</div>
+                            <div id="res-lost-spesen" class="text-sm font-bold text-amber-400 mt-0.5">252,00 € Netto</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5">Ab 8h Abwesenheit</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- TAB 5: PROFIL, EINSTELLUNGEN & BACKUP                     -->
+        <!-- ========================================================= -->
+        <section id="tab-settings" class="hidden space-y-4">
+
+            <!-- Team-Hinweis -->
+            <div class="bg-gradient-to-br from-emerald-900/40 to-slate-800 border border-emerald-500/30 rounded-2xl p-4">
+                <div class="flex items-start gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-sm text-white">TC Norden – Für dich & deine Kollegen</h3>
+                        <p class="text-xs text-slate-300 mt-1 leading-relaxed">Alle Kollegen können exakt denselben Link nutzen. Jeder speichert seine eigenen Zeiten & Gehaltsdaten <strong>100 % privat auf seinem eigenen Smartphone</strong>.</p>
+                        <button type="button" onclick="shareApp()" class="mt-3 bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition inline-flex items-center gap-1.5">
+                            App-Link an Kollegen senden
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profil-Einstellungen -->
+            <form id="settings-form" onsubmit="saveSettings(event)" class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 space-y-3.5">
+                <h2 class="text-base font-bold text-white border-b border-slate-700 pb-2">Dein Profil & Vertragsdaten</h2>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Dein Name (für Stundenzettel)</label>
+                        <input type="text" id="set-name" placeholder="Vorname Nachname" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Personal-Nr. / Kürzel (optional)</label>
+                        <input type="text" id="set-pers-id" placeholder="z. B. 1042"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Tätigkeit / Bereich</label>
+                    <input type="text" id="set-role" placeholder="Außendienst / Techniker TC Norden"
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Wochenstunden (Mo–Fr)</label>
+                        <input type="number" id="set-weekly-hours" step="0.5" min="1" max="60" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Monatsbrutto (€)</label>
+                        <input type="number" id="set-gross-salary" step="10" min="0" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Pausen-Regelung</label>
+                        <select id="set-pause-mode" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            <option value="manual">Manuell stempeln / eingeben</option>
+                            <option value="auto">Gesetzlich auto (30m >6h, 45m >9h)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Start-Übertrag (+Std.)</label>
+                        <input type="number" id="set-carryover" step="0.5" min="0" value="0"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Mindestlohn-Grenze (€ / Std.)</label>
+                    <input type="number" id="set-min-wage" step="0.01" min="0" required
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] transition text-slate-950 font-bold text-sm py-3.5 rounded-xl shadow">
+                    Einstellungen speichern
+                </button>
+            </form>
+
+            <!-- Datensicherung -->
+            <div class="bg-slate-800/60 border border-slate-700/70 rounded-2xl p-4 space-y-3">
+                <h3 class="text-sm font-bold text-white">Datensicherung (Backup)</h3>
+                <p class="text-xs text-slate-400">Sichere deine Zeiten regelmäßig als Datei – funktioniert auf iPhone und Android.</p>
+                <div class="grid grid-cols-2 gap-2.5">
+                    <button type="button" onclick="exportBackupJSON()" class="bg-slate-700 hover:bg-slate-600 active:scale-95 text-white text-xs font-semibold py-3 px-3 rounded-xl border border-slate-600 transition">
+                        Backup sichern
+                    </button>
+                    <label class="bg-slate-700 hover:bg-slate-600 active:scale-95 text-white text-xs font-semibold py-3 px-3 rounded-xl border border-slate-600 transition text-center flex items-center justify-center">
+                        Backup laden
+                        <input type="file" id="import-json-input" accept=".json,application/json" class="hidden" onchange="importBackupJSON(event)">
+                    </label>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Navigation (5 Tabs: Stempeluhr, Monat, Jahr, Lohn-Check, Profil) -->
+    <nav class="no-print fixed bottom-0 left-0 right-0 z-30 bg-slate-900/95 backdrop-blur border-t border-slate-800 px-1.5 pt-1.5 pb-[calc(0.4rem+env(safe-area-inset-bottom))]">
+        <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1">
+            <button type="button" onclick="switchTab('clock')" id="nav-clock" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-emerald-400 bg-emerald-500/10">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="9"></circle>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 7v5l3 3"></path>
+                </svg>
+                <span class="text-[10px] font-semibold mt-0.5">Stempeluhr</span>
+            </button>
+
+            <button type="button" onclick="switchTab('month')" id="nav-month" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 hover:text-slate-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                </svg>
+                <span class="text-[10px] font-semibold mt-0.5">Monat</span>
+            </button>
+
+            <button type="button" onclick="switchTab('year')" id="nav-year" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 hover:text-slate-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+                <span class="text-[10px] font-semibold mt-0.5">Jahr</span>
+            </button>
+
+            <button type="button" onclick="switchTab('calculator')" id="nav-calculator" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 hover:text-slate-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-[10px] font-semibold mt-0.5">Lohn</span>
+            </button>
+
+            <button type="button" onclick="switchTab('settings')" id="nav-settings" class="nav-btn flex flex-col items-center justify-center py-1.5 rounded-xl text-slate-400 hover:text-slate-200">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                <span class="text-[10px] font-semibold mt-0.5">Profil</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 1: SCHICHT EINTRAGEN / BEARBEITEN                   -->
+    <!-- ========================================================= -->
+    <div id="entry-modal" class="no-print hidden fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-slate-800 border border-slate-700 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 space-y-4 max-h-[92vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-700 pb-3">
+                <h3 id="modal-title" class="text-base font-bold text-white">Schicht eintragen</h3>
+                <button type="button" onclick="closeEntryModal()" class="p-2 rounded-xl bg-slate-700 text-slate-300 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <form id="entry-form" onsubmit="saveManualEntry(event)" class="space-y-3.5">
+                <input type="hidden" id="entry-id">
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Datum</label>
+                        <input type="date" id="entry-date" required
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Tages-Typ</label>
+                        <select id="entry-type" onchange="toggleEntryTimeFields()"
+                            class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                            <option value="Arbeit">Arbeitstag</option>
+                            <option value="Urlaub">Urlaub (bezahlt)</option>
+                            <option value="Krank">Krankheitstag</option>
+                            <option value="Feiertag">Feiertag</option>
+                            <option value="Frei">Frei (0h Soll)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="entry-time-fields" class="space-y-3">
+                    <div class="grid grid-cols-3 gap-2.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Beginn</label>
+                            <input type="time" id="entry-start" value="07:00"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Feierabend</label>
+                            <input type="time" id="entry-end" value="17:30"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Pause (Min.)</label>
+                            <input type="number" id="entry-pause" value="45" min="0" max="240"
+                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Einsatzort / Aufträge / Notiz</label>
+                    <input type="text" id="entry-note" placeholder="z. B. Tour Nord, 5 Aufträge"
+                        class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                </div>
+
+                <div class="pt-2 flex gap-2.5">
+                    <button type="button" onclick="closeEntryModal()" class="flex-1 bg-slate-700 hover:bg-slate-600 text-slate-200 font-semibold text-sm py-3.5 rounded-xl">Abbrechen</button>
+                    <button type="submit" class="flex-1 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm py-3.5 rounded-xl">Speichern</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 2: VERGESSENES AUSSTEMPELN-SCHUTZ (>12h SCHICHT)    -->
+    <!-- ========================================================= -->
+    <div id="forgotten-clockout-modal" class="no-print hidden fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-slate-800 border border-amber-500/50 w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 space-y-4 shadow-2xl">
+            <div class="flex items-start gap-3 border-b border-slate-700 pb-3">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-base font-bold text-white">Feierabend vergessen?</h3>
+                    <p id="forgotten-shift-info" class="text-xs text-slate-300 mt-0.5 leading-relaxed">Deine Schicht läuft bereits über 12 Stunden. Wann war wirklich Feierabend?</p>
+                </div>
+            </div>
+
+            <!-- Schnellauswahl-Buttons -->
+            <div>
+                <span class="block text-[11px] font-semibold text-slate-400 mb-2">Schnellauswahl Feierabend:</span>
+                <div class="grid grid-cols-5 gap-1.5">
+                    <button type="button" onclick="resolveForgottenShift('16:30')" class="bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 border border-slate-700 rounded-xl py-2.5 text-xs font-bold text-white transition">16:30</button>
+                    <button type="button" onclick="resolveForgottenShift('17:00')" class="bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 border border-slate-700 rounded-xl py-2.5 text-xs font-bold text-white transition">17:00</button>
+                    <button type="button" onclick="resolveForgottenShift('17:30')" class="bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 border border-slate-700 rounded-xl py-2.5 text-xs font-bold text-white transition">17:30</button>
+                    <button type="button" onclick="resolveForgottenShift('18:00')" class="bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 border border-slate-700 rounded-xl py-2.5 text-xs font-bold text-white transition">18:00</button>
+                    <button type="button" onclick="resolveForgottenShift('19:00')" class="bg-slate-900 hover:bg-emerald-500 hover:text-slate-950 border border-slate-700 rounded-xl py-2.5 text-xs font-bold text-white transition">19:00</button>
+                </div>
+            </div>
+
+            <!-- Eigene Uhrzeit -->
+            <div class="bg-slate-900/70 border border-slate-700/80 rounded-xl p-3 space-y-2">
+                <label class="block text-xs font-semibold text-slate-300">Oder genaue Uhrzeit wählen:</label>
+                <div class="flex gap-2">
+                    <input type="time" id="forgotten-custom-time" value="17:30"
+                        class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2.5 text-sm font-bold text-white focus:outline-none focus:border-emerald-500">
+                    <button type="button" onclick="resolveForgottenShift(document.getElementById('forgotten-custom-time').value)"
+                        class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs px-4 py-2.5 rounded-xl transition">
+                        Speichern
+                    </button>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-1">
+                <button type="button" onclick="dismissForgottenModal()" class="text-xs text-slate-400 hover:text-slate-200 py-2 px-2">
+                    Läuft noch (weiterlaufen lassen)
+                </button>
+                <button type="button" onclick="discardForgottenShift()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold py-2 px-2">
+                    Schicht verwerfen
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- MODAL 3: STUNDENZETTEL VORSCHAU & PDF/DRUCK (OHNE URL)    -->
+    <!-- ========================================================= -->
+    <div id="timesheet-modal" class="no-print hidden fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-sm flex flex-col">
+        <div class="bg-slate-900 border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+            <h3 class="text-sm font-bold text-white">Stundenzettel-Vorschau</h3>
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="triggerNativePrint()" class="bg-blue-600 hover:bg-blue-500 active:scale-95 text-white text-xs font-bold px-3.5 py-2 rounded-xl flex items-center gap-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Drucken / Als PDF
+                </button>
+                <button type="button" onclick="closeTimesheetModal()" class="p-2 rounded-xl bg-slate-800 text-slate-300 hover:text-white">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div class="flex-1 overflow-y-auto p-3 sm:p-6 bg-slate-950">
+            <div id="timesheet-preview-content" class="max-w-3xl mx-auto bg-white text-slate-900 rounded-xl shadow-2xl p-4 sm:p-8"></div>
+            <p class="text-center text-xs text-slate-400 mt-3 pb-6">Tipp auf iPhone/Android: Im Druckdialog mit zwei Fingern auf die Vorschau zoomen oder „Als PDF sichern“ wählen.</p>
+        </div>
+    </div>
+
+    <!-- Druckbereich (nur beim Drucken sichtbar, ohne URL) -->
+    <div id="print-area"></div>
+
+    <script>
+        // =========================================================================
+        // STORAGE KEYS (100% kompatibel mit bisherigen Einträgen auf GitHub Pages)
+        // =========================================================================
+        const STORAGE_KEY_SETTINGS = 'zeitpro_settings_v1';
+        const STORAGE_KEY_ENTRIES = 'zeitpro_entries_v1';
+        const STORAGE_KEY_ACTIVE = 'zeitpro_active_shift_v1';
+
+        const DEFAULT_SETTINGS = {
+            name: 'Mitarbeiter (TC Norden)',
+            persId: '',
+            role: 'Außendienst / Techniker',
+            weeklyHours: 40,
+            grossSalary: 2800,
+            pauseMode: 'manual',
+            carryoverHours: 0,
+            minWage: 13.90
+        };
+
+        let settings = loadSettings();
+        let entries = loadEntries();
+        let activeShift = loadActiveShift();
+        let viewDate = new Date();
+        let viewYear = new Date().getFullYear();
+        let timerInterval = null;
+        let forgottenPromptDismissed = false;
+
+        // =========================================================================
+        // INITIALISIERUNG
+        // =========================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            updateHeaderSubtitle();
+            populateSettingsForm();
+            updateLiveClockUI();
+            startLiveTimerLoop();
+            renderMonthView();
+            renderYearView();
+            runWageCalculator();
+            checkForgottenClockOut();
+
+            // Prüfen, ob User auf dem iPhone wieder im App-Modus ist
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    updateLiveClockUI();
+                    checkForgottenClockOut();
+                }
+            });
+        });
+
+        function loadSettings() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_SETTINGS);
+                return raw ? { ...DEFAULT_SETTINGS, ...JSON.parse(raw) } : { ...DEFAULT_SETTINGS };
+            } catch (e) {
+                return { ...DEFAULT_SETTINGS };
+            }
+        }
+
+        function loadEntries() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_ENTRIES);
+                return raw ? JSON.parse(raw) : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function loadActiveShift() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_ACTIVE);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function saveEntriesToStorage() {
+            localStorage.setItem(STORAGE_KEY_ENTRIES, JSON.stringify(entries));
+        }
+
+        function saveActiveShiftToStorage() {
+            if (activeShift) {
+                localStorage.setItem(STORAGE_KEY_ACTIVE, JSON.stringify(activeShift));
+            } else {
+                localStorage.removeItem(STORAGE_KEY_ACTIVE);
+            }
+        }
+
+        // =========================================================================
+        // VERGESSENES AUSSTEMPELN-SCHUTZ (> 12 STUNDEN)
+        // =========================================================================
+        function checkForgottenClockOut() {
+            if (!activeShift || forgottenPromptDismissed) return;
+            const elapsedHours = (Date.now() - activeShift.startTime) / 3600000;
+            if (elapsedHours >= 12) {
+                const startObj = new Date(activeShift.startTime);
+                const dateLabel = startObj.toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit' });
+                const timeLabel = formatTimeHHMM(startObj);
+                document.getElementById('forgotten-shift-info').innerHTML =
+                    `Du bist seit <strong>${dateLabel}, ${timeLabel} Uhr</strong> (${elapsedHours.toFixed(1).replace('.', ',')} Std.) eingestempelt. Wann war wirklich Feierabend?`;
+                document.getElementById('forgotten-clockout-modal').classList.remove('hidden');
+            }
+        }
+
+        function resolveForgottenShift(endTimeStr) {
+            if (!activeShift || !endTimeStr) return;
+
+            const startObj = new Date(activeShift.startTime);
+            const dateStr = formatDateISO(startObj);
+            const startStr = formatTimeHHMM(startObj);
+
+            const [sH, sM] = startStr.split(':').map(Number);
+            const [eH, eM] = endTimeStr.split(':').map(Number);
+            let grossMinutes = (eH * 60 + eM) - (sH * 60 + sM);
+            if (grossMinutes < 0) grossMinutes += 24 * 60;
+
+            let pauseMinutes = Math.round((activeShift.totalPauseMs || 0) / 60000);
+            if (settings.pauseMode === 'auto' || pauseMinutes === 0) {
+                if (grossMinutes > 9 * 60 && pauseMinutes < 45) pauseMinutes = 45;
+                else if (grossMinutes > 6 * 60 && pauseMinutes < 30) pauseMinutes = 30;
+            }
+
+            const noteInput = document.getElementById('live-note-input').value.trim();
+            const finalNote = noteInput || activeShift.note || 'Außendienst / Tour';
+
+            entries.push({
+                id: 'entry_' + Date.now(),
+                date: dateStr,
+                type: 'Arbeit',
+                start: startStr,
+                end: endTimeStr,
+                pause: pauseMinutes,
+                note: finalNote
+            });
+
+            sortEntries();
+            saveEntriesToStorage();
+
+            activeShift = null;
+            forgottenPromptDismissed = false;
+            saveActiveShiftToStorage();
+            document.getElementById('live-note-input').value = '';
+            document.getElementById('forgotten-clockout-modal').classList.add('hidden');
+
+            updateLiveClockUI();
+            renderMonthView();
+            renderYearView();
+            showToast(`Schicht vom ${startObj.toLocaleDateString('de-DE')} sauber bis ${endTimeStr} Uhr verbucht!`, 'success');
+        }
+
+        function dismissForgottenModal() {
+            forgottenPromptDismissed = true;
+            document.getElementById('forgotten-clockout-modal').classList.add('hidden');
+        }
+
+        function discardForgottenShift() {
+            activeShift = null;
+            forgottenPromptDismissed = false;
+            saveActiveShiftToStorage();
+            document.getElementById('forgotten-clockout-modal').classList.add('hidden');
+            updateLiveClockUI();
+            showToast('Offene Schicht wurde verworfen.', 'info');
+        }
+
+        // =========================================================================
+        // NAVIGATION & UI HILFSFUNKTIONEN
+        // =========================================================================
+        function switchTab(tabName) {
+            const tabs = ['clock', 'month', 'year', 'calculator', 'settings'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const btn = document.getElementById(`nav-${t}`);
+                btn.classList.remove('text-emerald-400', 'bg-emerald-500/10');
+                btn.classList.add('text-slate-400');
+            });
+
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`nav-${tabName}`);
+            activeBtn.classList.remove('text-slate-400');
+            activeBtn.classList.add('text-emerald-400', 'bg-emerald-500/10');
+
+            if (tabName === 'month') renderMonthView();
+            if (tabName === 'year') renderYearView();
+            if (tabName === 'calculator') {
+                document.getElementById('calc-gross').value = settings.grossSalary;
+                runWageCalculator();
+            }
+        }
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-emerald-600 text-white border-emerald-400',
+                error: 'bg-rose-600 text-white border-rose-400',
+                info: 'bg-slate-800 text-slate-100 border-slate-600'
+            };
+            toast.className = `pointer-events-auto px-4 py-3 rounded-xl border shadow-xl text-xs font-semibold transition-all duration-300 ${colors[type] || colors.info}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(-8px)';
+                setTimeout(() => toast.remove(), 300);
+            }, 3400);
+        }
+
+        function updateHeaderSubtitle() {
+            const dailyTarget = (settings.weeklyHours / 5).toFixed(1).replace('.', ',');
+            document.getElementById('header-user-subtitle').textContent = `${settings.name} • Mo–Fr ${dailyTarget}h (Sa/So 0h)`;
+        }
+
+        function shareApp() {
+            const shareData = {
+                title: 'Außendienst Logbuch - TC Norden',
+                text: 'Hier ist unser Außendienst Logbuch (AD-Log) für Stempeluhr, Überstunden & PDF-Stundenzettel. Deine Daten bleiben komplett privat auf deinem eigenen Handy:',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).catch(() => {});
+            } else {
+                const tempInput = document.createElement('textarea');
+                tempInput.value = window.location.href;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                try {
+                    document.execCommand('copy');
+                    showToast('App-Link kopiert! Jetzt in eure Gruppe einfügen.', 'success');
+                } catch (err) {
+                    showToast('Link konnte nicht kopiert werden.', 'error');
+                }
+                document.body.removeChild(tempInput);
+            }
+        }
+
+        // =========================================================================
+        // STEMPELUHR (LIVE TIME CLOCK)
+        // =========================================================================
+        function clockIn() {
+            if (activeShift) return;
+            forgottenPromptDismissed = false;
+            activeShift = {
+                startTime: Date.now(),
+                pauseStart: null,
+                totalPauseMs: 0,
+                note: document.getElementById('live-note-input').value.trim()
+            };
+            saveActiveShiftToStorage();
+            updateLiveClockUI();
+            showToast('Arbeitsbeginn gestempelt. Gute Tour!', 'success');
+        }
+
+        function togglePause() {
+            if (!activeShift) return;
+            const now = Date.now();
+            if (activeShift.pauseStart) {
+                activeShift.totalPauseMs += (now - activeShift.pauseStart);
+                activeShift.pauseStart = null;
+                showToast('Pause beendet – Arbeitszeit läuft weiter.', 'info');
+            } else {
+                activeShift.pauseStart = now;
+                showToast('Pause gestartet.', 'info');
+            }
+            saveActiveShiftToStorage();
+            updateLiveClockUI();
+        }
+
+        function clockOut() {
+            if (!activeShift) return;
+            const now = Date.now();
+
+            if (activeShift.pauseStart) {
+                activeShift.totalPauseMs += (now - activeShift.pauseStart);
+                activeShift.pauseStart = null;
+            }
+
+            const startDateObj = new Date(activeShift.startTime);
+            const endDateObj = new Date(now);
+
+            const dateStr = formatDateISO(startDateObj);
+            const startStr = formatTimeHHMM(startDateObj);
+            const endStr = formatTimeHHMM(endDateObj);
+
+            const grossMinutes = Math.max(1, Math.round((now - activeShift.startTime) / 60000));
+            let pauseMinutes = Math.round(activeShift.totalPauseMs / 60000);
+
+            if (settings.pauseMode === 'auto') {
+                if (grossMinutes > 9 * 60 && pauseMinutes < 45) pauseMinutes = 45;
+                else if (grossMinutes > 6 * 60 && pauseMinutes < 30) pauseMinutes = 30;
+            }
+
+            const noteInput = document.getElementById('live-note-input').value.trim();
+            const finalNote = noteInput || activeShift.note || 'Außendienst / Tour';
+
+            entries.push({
+                id: 'entry_' + Date.now(),
+                date: dateStr,
+                type: 'Arbeit',
+                start: startStr,
+                end: endStr,
+                pause: pauseMinutes,
+                note: finalNote
+            });
+
+            sortEntries();
+            saveEntriesToStorage();
+
+            activeShift = null;
+            forgottenPromptDismissed = false;
+            saveActiveShiftToStorage();
+            document.getElementById('live-note-input').value = '';
+            updateLiveClockUI();
+            renderMonthView();
+            renderYearView();
+
+            showToast('Feierabend gespeichert!', 'success');
+        }
+
+        function startLiveTimerLoop() {
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(updateLiveClockUI, 1000);
+        }
+
+        function updateLiveClockUI() {
+            const now = new Date();
+            const options = { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' };
+            document.getElementById('live-date-display').textContent = now.toLocaleDateString('de-DE', options);
+
+            const badge = document.getElementById('clock-status-badge');
+            const btnIn = document.getElementById('btn-clock-in');
+            const activeBtns = document.getElementById('active-shift-buttons');
+            const pauseBtn = document.getElementById('btn-pause-toggle');
+            const pauseBtnText = document.getElementById('btn-pause-text');
+            const spesenBanner = document.getElementById('live-spesen-banner');
+
+            if (!activeShift) {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-700 text-slate-300';
+                badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-slate-400"></span> Bereit zum Start';
+                document.getElementById('live-work-timer').textContent = '00:00:00';
+                document.getElementById('live-start-time').textContent = '--:--';
+                document.getElementById('live-pause-time').textContent = '0 Min.';
+                document.getElementById('live-absence-time').textContent = '0:00 h';
+                spesenBanner.classList.add('hidden');
+
+                btnIn.classList.remove('hidden');
+                activeBtns.classList.add('hidden');
+                return;
+            }
+
+            const noteEl = document.getElementById('live-note-input');
+            if (document.activeElement !== noteEl && activeShift.note && !noteEl.value) {
+                noteEl.value = activeShift.note;
+            } else if (document.activeElement === noteEl) {
+                activeShift.note = noteEl.value;
+                saveActiveShiftToStorage();
+            }
+
+            btnIn.classList.add('hidden');
+            activeBtns.classList.remove('hidden');
+
+            const nowMs = Date.now();
+            const totalElapsedMs = Math.max(0, nowMs - activeShift.startTime);
+            const currentPauseMs = activeShift.totalPauseMs + (activeShift.pauseStart ? (nowMs - activeShift.pauseStart) : 0);
+            const netWorkMs = Math.max(0, totalElapsedMs - currentPauseMs);
+
+            if (activeShift.pauseStart) {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-500/20 text-amber-300 border border-amber-500/30';
+                badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span> Pause läuft';
+                pauseBtn.className = 'py-4 px-4 rounded-2xl bg-emerald-500 hover:bg-emerald-400 active:scale-[0.98] transition text-slate-950 font-bold text-base shadow-lg flex items-center justify-center gap-2';
+                pauseBtnText.textContent = 'Pause Ende';
+            } else {
+                badge.className = 'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Arbeitszeit läuft';
+                pauseBtn.className = 'py-4 px-4 rounded-2xl bg-amber-500 hover:bg-amber-400 active:scale-[0.98] transition text-slate-950 font-bold text-base shadow-lg flex items-center justify-center gap-2';
+                pauseBtnText.textContent = 'Pause Start';
+            }
+
+            document.getElementById('live-work-timer').textContent = formatDurationHMS(netWorkMs);
+            document.getElementById('live-start-time').textContent = formatTimeHHMM(new Date(activeShift.startTime));
+            document.getElementById('live-pause-time').textContent = `${Math.floor(currentPauseMs / 60000)} Min.`;
+
+            const absenceHours = totalElapsedMs / 3600000;
+            const absH = Math.floor(absenceHours);
+            const absM = Math.floor((absenceHours - absH) * 60);
+            document.getElementById('live-absence-time').textContent = `${absH}:${String(absM).padStart(2, '0')} h`;
+
+            if (absenceHours > 8) {
+                spesenBanner.classList.remove('hidden');
+            } else {
+                spesenBanner.classList.add('hidden');
+            }
+        }
+
+        // =========================================================================
+        // BERECHNUNGSLOGIK (SA/SO = 0h SOLL, KEINE MINUSSTUNDEN-FALLE)
+        // =========================================================================
+        function calculateEntryMetrics(entry) {
+            const dailyTargetHours = settings.weeklyHours / 5; // 8,0h Mo–Fr
+            const dateObj = new Date(entry.date + 'T12:00:00');
+            const dayOfWeek = dateObj.getDay(); // 0 = So, 6 = Sa
+            const isWeekend = (dayOfWeek === 0 || dayOfWeek === 6);
+
+            // Samstag & Sonntag haben immer 0 Soll-Stunden -> Frei am Samstag erzeugt NIEMALS -8h!
+            const targetHours = isWeekend ? 0 : dailyTargetHours;
+
+            if (entry.type === 'Urlaub' || entry.type === 'Krank' || entry.type === 'Feiertag') {
+                return {
+                    grossHours: targetHours,
+                    pauseMinutes: 0,
+                    netHours: targetHours,
+                    targetHours: targetHours,
+                    diffHours: 0,
+                    hasSpesen: false
+                };
+            }
+
+            if (entry.type === 'Frei') {
+                return {
+                    grossHours: 0,
+                    pauseMinutes: 0,
+                    netHours: 0,
+                    targetHours: 0,
+                    diffHours: 0,
+                    hasSpesen: false
+                };
+            }
+
+            const [sH, sM] = (entry.start || '07:00').split(':').map(Number);
+            const [eH, eM] = (entry.end || '16:00').split(':').map(Number);
+            let startMins = sH * 60 + sM;
+            let endMins = eH * 60 + eM;
+            if (endMins < startMins) endMins += 24 * 60;
+
+            const grossMinutes = Math.max(0, endMins - startMins);
+            const pauseMinutes = Number(entry.pause) || 0;
+            const netMinutes = Math.max(0, grossMinutes - pauseMinutes);
+
+            const grossHours = grossMinutes / 60;
+            const netHours = netMinutes / 60;
+            const diffHours = netHours - targetHours;
+            const hasSpesen = grossHours > 8.0;
+
+            return {
+                grossHours,
+                pauseMinutes,
+                netHours,
+                targetHours,
+                diffHours,
+                hasSpesen
+            };
+        }
+
+        function getMonthStats(year, monthIndex) {
+            const prefix = `${year}-${String(monthIndex + 1).padStart(2, '0')}`;
+            const monthEntries = entries.filter(e => e.date.startsWith(prefix));
+
+            let totalIst = 0;
+            let totalSoll = 0;
+            let rawDiff = 0;
+            let spesenDays = 0;
+
+            monthEntries.forEach(entry => {
+                const m = calculateEntryMetrics(entry);
+                totalIst += m.netHours;
+                totalSoll += m.targetHours;
+                rawDiff += m.diffHours;
+                if (m.hasSpesen) spesenDays++;
+            });
+
+            // Minusstunden werden im Monats-/Jahressaldo nicht subtrahiert (Effektiv = >= 0)
+            const positiveOvertime = Math.max(0, rawDiff);
+            const effectiveWage = totalIst > 0 ? (settings.grossSalary / totalIst) : 0;
+
+            return {
+                monthEntries,
+                totalIst,
+                totalSoll,
+                rawDiff,
+                positiveOvertime,
+                spesenDays,
+                spesenEuro: spesenDays * 14,
+                effectiveWage
+            };
+        }
+
+        function calculateAllTimePositiveOvertime() {
+            const monthMap = {};
+            entries.forEach(entry => {
+                const ym = entry.date.slice(0, 7);
+                if (!monthMap[ym]) monthMap[ym] = 0;
+                monthMap[ym] += calculateEntryMetrics(entry).diffHours;
+            });
+
+            let totalPositive = Number(settings.carryoverHours) || 0;
+            Object.values(monthMap).forEach(diff => {
+                if (diff > 0) totalPositive += diff;
+            });
+            return totalPositive;
+        }
+
+        function sortEntries() {
+            entries.sort((a, b) => b.date.localeCompare(a.date));
+        }
+
+        // =========================================================================
+        // MONATSANSICHT
+        // =========================================================================
+        function changeMonth(delta) {
+            viewDate.setMonth(viewDate.getMonth() + delta);
+            renderMonthView();
+        }
+
+        function jumpToMonth(year, monthIndex) {
+            viewDate = new Date(year, monthIndex, 1);
+            switchTab('month');
+        }
+
+        function renderMonthView() {
+            const year = viewDate.getFullYear();
+            const month = viewDate.getMonth();
+            const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            document.getElementById('current-month-label').textContent = `${monthNames[month]} ${year}`;
+
+            const stats = getMonthStats(year, month);
+            const allTimePositive = calculateAllTimePositiveOvertime();
+
+            document.getElementById('current-month-days-count').textContent = `${stats.monthEntries.length} erfasste Tage`;
+            document.getElementById('kpi-ist-hours').textContent = `${formatDecimalHours(stats.totalIst)} h`;
+            document.getElementById('kpi-soll-hours').textContent = `/ ${formatDecimalHours(stats.totalSoll)} h`;
+
+            const overtimeEl = document.getElementById('kpi-overtime');
+            overtimeEl.textContent = `+${formatDecimalHours(stats.positiveOvertime)} h`;
+            overtimeEl.className = 'mt-1 text-xl font-extrabold text-emerald-400';
+            document.getElementById('kpi-overtime-total').textContent = `Gesamt (ohne Minus): +${formatDecimalHours(allTimePositive)} h`;
+
+            const wageEl = document.getElementById('kpi-real-wage');
+            const warningBox = document.getElementById('minwage-warning-box');
+            document.getElementById('warning-minwage-val').textContent = formatEuro(settings.minWage);
+
+            if (stats.totalIst > 0) {
+                wageEl.textContent = `${stats.effectiveWage.toFixed(2).replace('.', ',')} €`;
+                if (stats.effectiveWage < settings.minWage) {
+                    wageEl.className = 'mt-1 text-xl font-extrabold text-rose-400';
+                    warningBox.classList.remove('hidden');
+                } else {
+                    wageEl.className = 'mt-1 text-xl font-extrabold text-blue-400';
+                    warningBox.classList.add('hidden');
+                }
+            } else {
+                wageEl.textContent = '-- €';
+                wageEl.className = 'mt-1 text-xl font-extrabold text-blue-400';
+                warningBox.classList.add('hidden');
+            }
+            document.getElementById('kpi-minwage-status').textContent = `Basis: ${formatEuro(settings.grossSalary)} Brutto`;
+
+            document.getElementById('kpi-spesen-sum').textContent = formatEuro(stats.spesenEuro);
+            document.getElementById('kpi-spesen-days').textContent = `${stats.spesenDays} Tage à 14 €`;
+
+            // Schnellübersicht auf Tab 1 synchronisieren
+            const realNow = new Date();
+            if (year === realNow.getFullYear() && month === realNow.getMonth()) {
+                document.getElementById('quick-month-ist').textContent = `${formatDecimalHours(stats.totalIst)} h`;
+                document.getElementById('quick-month-diff').textContent = `+${formatDecimalHours(stats.positiveOvertime)} h`;
+                document.getElementById('quick-month-wage').textContent = stats.totalIst > 0 ? `${stats.effectiveWage.toFixed(2).replace('.', ',')} €` : '-- €';
+            }
+
+            const listContainer = document.getElementById('entries-list-container');
+            if (stats.monthEntries.length === 0) {
+                listContainer.innerHTML = `
+                    <div class="bg-slate-800/40 border border-dashed border-slate-700 rounded-2xl p-8 text-center">
+                        <p class="text-sm font-semibold text-slate-300">Noch keine Einträge für ${monthNames[month]}</p>
+                        <p class="text-xs text-slate-500 mt-1">Nutze die Stempeluhr oder trage eine Schicht manuell nach.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+            listContainer.innerHTML = stats.monthEntries.map(entry => {
+                const m = calculateEntryMetrics(entry);
+                const dObj = new Date(entry.date + 'T12:00:00');
+                const dayName = weekdays[dObj.getDay()];
+                const formattedDate = `${String(dObj.getDate()).padStart(2, '0')}.${String(dObj.getMonth() + 1).padStart(2, '0')}.`;
+
+                let typeBadge = '';
+                if (entry.type !== 'Arbeit') {
+                    const badgeColors = {
+                        'Urlaub': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
+                        'Krank': 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+                        'Feiertag': 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+                        'Frei': 'bg-slate-700 text-slate-300 border-slate-600'
+                    };
+                    typeBadge = `<span class="text-[10px] font-bold px-2 py-0.5 rounded-md border ${badgeColors[entry.type] || ''}">${entry.type}</span>`;
+                }
+
+                const spesenTag = m.hasSpesen ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">+14€</span>` : '';
+
+                return `
+                    <div onclick="openEntryModal('${entry.id}')" class="bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-2xl p-3.5 flex items-center justify-between gap-3 transition">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center gap-2 flex-wrap">
+                                <span class="text-sm font-bold text-white">${dayName}, ${formattedDate}</span>
+                                ${typeBadge}
+                                ${spesenTag}
+                            </div>
+                            <div class="text-xs text-slate-400 mt-1">
+                                ${entry.type === 'Arbeit' ? `${entry.start} – ${entry.end} Uhr (${entry.pause}m Pause)` : (entry.type === 'Frei' ? 'Freier Tag (0,00 h Soll)' : `Gutschrift: ${formatDecimalHours(m.netHours)} Std.`)}
+                            </div>
+                            ${entry.note ? `<div class="text-xs text-slate-300 mt-1 truncate">${escapeHTML(entry.note)}</div>` : ''}
+                        </div>
+
+                        <div class="text-right shrink-0">
+                            <div class="text-sm font-extrabold text-white">${formatDecimalHours(m.netHours)} h</div>
+                            <div class="text-[11px] font-semibold ${m.diffHours >= 0 ? 'text-emerald-400' : 'text-slate-400'}">
+                                ${m.diffHours >= 0 ? '+' : ''}${formatDecimalHours(m.diffHours)} h
+                            </div>
+                            <div class="flex items-center justify-end gap-2 mt-1.5" onclick="event.stopPropagation()">
+                                <button type="button" onclick="openEntryModal('${entry.id}')" class="text-xs text-slate-400 hover:text-blue-400 p-1.5" title="Bearbeiten">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                </button>
+                                <button type="button" onclick="deleteEntry('${entry.id}')" class="text-xs text-slate-400 hover:text-rose-400 p-1.5" title="Löschen">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // =========================================================================
+        // JAHRESBILANZ (12-MONATS-AUSWERTUNG)
+        // =========================================================================
+        function changeYear(delta) {
+            viewYear += delta;
+            renderYearView();
+        }
+
+        function renderYearView() {
+            document.getElementById('current-year-label').textContent = `Jahresbilanz ${viewYear}`;
+            document.getElementById('year-summary-title').textContent = `${settings.name} – Auswertung ${viewYear}`;
+
+            const shortMonths = ['Jan', 'Feb', 'Mär', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dez'];
+            let yearIst = 0;
+            let yearSoll = 0;
+            let yearOvertime = 0;
+            let yearSpesenEuro = 0;
+            let yearSpesenDays = 0;
+            let activeMonthsCount = 0;
+            let wageSum = 0;
+
+            const contractHourly = (settings.weeklyHours * 4.3333) > 0
+                ? (settings.grossSalary / (settings.weeklyHours * 4.3333))
+                : 0;
+
+            const rows = shortMonths.map((mName, idx) => {
+                const st = getMonthStats(viewYear, idx);
+                const hasData = st.monthEntries.length > 0;
+
+                if (hasData) {
+                    activeMonthsCount++;
+                    yearIst += st.totalIst;
+                    yearSoll += st.totalSoll;
+                    yearOvertime += st.positiveOvertime;
+                    yearSpesenEuro += st.spesenEuro;
+                    yearSpesenDays += st.spesenDays;
+                    if (st.effectiveWage > 0) wageSum += st.effectiveWage;
+                }
+
+                const wageCell = hasData && st.effectiveWage > 0
+                    ? `<span class="${st.effectiveWage < settings.minWage ? 'text-rose-400 font-bold' : 'text-blue-400 font-semibold'}">${st.effectiveWage.toFixed(2).replace('.', ',')} €</span>`
+                    : `<span class="text-slate-600">--</span>`;
+
+                return `
+                    <tr onclick="jumpToMonth(${viewYear}, ${idx})" class="hover:bg-slate-700/40 transition ${hasData ? 'text-slate-200' : 'text-slate-500'}">
+                        <td class="py-2.5 px-3 font-bold">${mName} ${String(viewYear).slice(2)}</td>
+                        <td class="py-2.5 px-2.5 text-right font-mono">${hasData ? `${st.totalIst.toFixed(1).replace('.', ',')} / ${st.totalSoll.toFixed(0)}h` : '--'}</td>
+                        <td class="py-2.5 px-2.5 text-right font-bold ${st.positiveOvertime > 0 ? 'text-emerald-400' : ''}">${hasData ? `+${st.positiveOvertime.toFixed(1).replace('.', ',')}h` : '--'}</td>
+                        <td class="py-2.5 px-2.5 text-right">${wageCell}</td>
+                        <td class="py-2.5 px-3 text-right font-semibold ${st.spesenEuro > 0 ? 'text-amber-400' : ''}">${hasData ? `${st.spesenEuro} €` : '--'}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            document.getElementById('year-months-tbody').innerHTML = rows;
+            document.getElementById('year-active-months-badge').textContent = `${activeMonthsCount} aktive Monate`;
+            document.getElementById('year-total-overtime').textContent = `+${yearOvertime.toFixed(1).replace('.', ',')} h`;
+            document.getElementById('year-overtime-euro').textContent = `Wert: ~${Math.round(yearOvertime * contractHourly)} €`;
+
+            const avgWage = activeMonthsCount > 0 ? (wageSum / activeMonthsCount) : 0;
+            const avgWageEl = document.getElementById('year-avg-wage');
+            avgWageEl.textContent = avgWage > 0 ? `${avgWage.toFixed(2).replace('.', ',')} €` : '-- €';
+            avgWageEl.className = `text-lg sm:text-xl font-extrabold mt-0.5 ${avgWage > 0 && avgWage < settings.minWage ? 'text-rose-400' : 'text-blue-400'}`;
+
+            document.getElementById('year-total-spesen').textContent = `${yearSpesenEuro} €`;
+            document.getElementById('year-spesen-days').textContent = `${yearSpesenDays} Tage >8h`;
+            document.getElementById('year-ist-soll-text').textContent = `${formatDecimalHours(yearIst)} h / ${formatDecimalHours(yearSoll)} h`;
+        }
+
+        // =========================================================================
+        // MODAL: EINTRAG HINZUFÜGEN / BEARBEITEN
+        // =========================================================================
+        function openEntryModal(entryId = null, defaultType = 'Arbeit') {
+            const modal = document.getElementById('entry-modal');
+            const title = document.getElementById('modal-title');
+
+            if (entryId) {
+                const entry = entries.find(e => e.id === entryId);
+                if (!entry) return;
+                title.textContent = 'Eintrag bearbeiten';
+                document.getElementById('entry-id').value = entry.id;
+                document.getElementById('entry-date').value = entry.date;
+                document.getElementById('entry-type').value = entry.type;
+                document.getElementById('entry-start').value = entry.start || '07:00';
+                document.getElementById('entry-end').value = entry.end || '17:00';
+                document.getElementById('entry-pause').value = entry.pause ?? 30;
+                document.getElementById('entry-note').value = entry.note || '';
+            } else {
+                title.textContent = defaultType === 'Arbeit' ? 'Schicht nachtragen' : 'Abwesenheit eintragen';
+                document.getElementById('entry-id').value = '';
+                document.getElementById('entry-date').value = formatDateISO(new Date());
+                document.getElementById('entry-type').value = defaultType;
+                document.getElementById('entry-start').value = '07:00';
+                document.getElementById('entry-end').value = '17:30';
+                document.getElementById('entry-pause').value = '45';
+                document.getElementById('entry-note').value = '';
+            }
+
+            toggleEntryTimeFields();
+            modal.classList.remove('hidden');
+        }
+
+        function closeEntryModal() {
+            document.getElementById('entry-modal').classList.add('hidden');
+        }
+
+        function toggleEntryTimeFields() {
+            const type = document.getElementById('entry-type').value;
+            const timeFields = document.getElementById('entry-time-fields');
+            if (type === 'Arbeit') {
+                timeFields.classList.remove('hidden');
+            } else {
+                timeFields.classList.add('hidden');
+            }
+        }
+
+        function saveManualEntry(e) {
+            e.preventDefault();
+            const id = document.getElementById('entry-id').value;
+            const date = document.getElementById('entry-date').value;
+            const type = document.getElementById('entry-type').value;
+            const start = document.getElementById('entry-start').value;
+            const end = document.getElementById('entry-end').value;
+            let pause = parseInt(document.getElementById('entry-pause').value, 10) || 0;
+            const note = document.getElementById('entry-note').value.trim();
+
+            if (type === 'Arbeit' && settings.pauseMode === 'auto') {
+                const [sH, sM] = start.split(':').map(Number);
+                const [eH, eM] = end.split(':').map(Number);
+                let grossMins = (eH * 60 + eM) - (sH * 60 + sM);
+                if (grossMins < 0) grossMins += 1440;
+                if (grossMins > 540 && pause < 45) pause = 45;
+                else if (grossMins > 360 && pause < 30) pause = 30;
+            }
+
+            const entryData = {
+                id: id || ('entry_' + Date.now()),
+                date,
+                type,
+                start: type === 'Arbeit' ? start : '',
+                end: type === 'Arbeit' ? end : '',
+                pause: type === 'Arbeit' ? pause : 0,
+                note
+            };
+
+            if (id) {
+                const idx = entries.findIndex(item => item.id === id);
+                if (idx !== -1) entries[idx] = entryData;
+                showToast('Eintrag aktualisiert.', 'success');
+            } else {
+                entries.push(entryData);
+                showToast('Eintrag gespeichert.', 'success');
+            }
+
+            sortEntries();
+            saveEntriesToStorage();
+            closeEntryModal();
+
+            viewDate = new Date(date + 'T12:00:00');
+            viewYear = viewDate.getFullYear();
+            renderMonthView();
+            renderYearView();
+        }
+
+        function deleteEntry(id) {
+            entries = entries.filter(e => e.id !== id);
+            saveEntriesToStorage();
+            renderMonthView();
+            renderYearView();
+            showToast('Eintrag gelöscht.', 'info');
+        }
+
+        // =========================================================================
+        // STUNDENLOHN-RECHNER
+        // =========================================================================
+        function setCalcWeekly(hours) {
+            document.getElementById('calc-weekly-hours').value = hours;
+            syncCalcFromWeekly();
+        }
+
+        function syncCalcFromWeekly() {
+            const weekly = parseFloat(document.getElementById('calc-weekly-hours').value) || 0;
+            document.getElementById('calc-monthly-hours').value = (weekly * 4.3333).toFixed(1);
+            runWageCalculator();
+        }
+
+        function syncCalcFromMonthly() {
+            const monthly = parseFloat(document.getElementById('calc-monthly-hours').value) || 0;
+            document.getElementById('calc-weekly-hours').value = (monthly / 4.3333).toFixed(1);
+            runWageCalculator();
+        }
+
+        function runWageCalculator() {
+            const gross = parseFloat(document.getElementById('calc-gross').value) || 0;
+            const monthlyHours = parseFloat(document.getElementById('calc-monthly-hours').value) || 1;
+            const spesenDays = parseInt(document.getElementById('calc-spesen-days').value, 10) || 0;
+
+            const contractMonthlyHours = settings.weeklyHours * 4.3333;
+            const contractHourlyWage = contractMonthlyHours > 0 ? (gross / contractMonthlyHours) : 0;
+            const realHourlyWage = monthlyHours > 0 ? (gross / monthlyHours) : 0;
+
+            document.getElementById('res-contract-wage').textContent = `${contractHourlyWage.toFixed(2).replace('.', ',')} € / Std.`;
+            const realWageEl = document.getElementById('res-real-wage');
+            realWageEl.textContent = `${realHourlyWage.toFixed(2).replace('.', ',')} € / Std.`;
+
+            const alertBox = document.getElementById('calc-minwage-alert');
+            if (realHourlyWage < settings.minWage) {
+                realWageEl.className = 'text-2xl font-extrabold text-rose-400 mt-0.5';
+                alertBox.className = 'p-3 rounded-xl bg-rose-500/15 border border-rose-500/30 text-xs text-rose-200';
+                alertBox.innerHTML = `<strong>Unter Mindestlohn (${formatEuro(settings.minWage)}/Std.)!</strong> Bei ${monthlyHours.toFixed(0)} Std. im Monat müsste dein Bruttolohn gesetzlich mindestens <strong>${formatEuro(monthlyHours * settings.minWage)}</strong> betragen.`;
+            } else {
+                realWageEl.className = 'text-2xl font-extrabold text-emerald-400 mt-0.5';
+                alertBox.className = 'p-3 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-xs text-emerald-200';
+                alertBox.innerHTML = `<strong>Über Mindestlohn (${formatEuro(settings.minWage)}/Std.):</strong> Dein effektiver Stundenlohn liegt noch ${(realHourlyWage - settings.minWage).toFixed(2).replace('.', ',')} € über der gesetzlichen Grenze.`;
+            }
+
+            const extraHours = Math.max(0, monthlyHours - contractMonthlyHours);
+            const extraValue = extraHours * contractHourlyWage;
+            document.getElementById('res-unpaid-hours').textContent = `+${extraHours.toFixed(1).replace('.', ',')} Std.`;
+            document.getElementById('res-unpaid-value').textContent = `Wert: ~${formatEuro(extraValue)} Brutto`;
+
+            document.getElementById('res-lost-spesen').textContent = `${formatEuro(spesenDays * 14)} Netto`;
+        }
+
+        // =========================================================================
+        // EINSTELLUNGEN & BACKUP
+        // =========================================================================
+        function populateSettingsForm() {
+            document.getElementById('set-name').value = settings.name;
+            document.getElementById('set-pers-id').value = settings.persId || '';
+            document.getElementById('set-role').value = settings.role;
+            document.getElementById('set-weekly-hours').value = settings.weeklyHours;
+            document.getElementById('set-gross-salary').value = settings.grossSalary;
+            document.getElementById('set-pause-mode').value = settings.pauseMode;
+            document.getElementById('set-carryover').value = settings.carryoverHours || 0;
+            document.getElementById('set-min-wage').value = settings.minWage;
+        }
+
+        function saveSettings(e) {
+            e.preventDefault();
+            settings = {
+                name: document.getElementById('set-name').value.trim() || 'Mitarbeiter (TC Norden)',
+                persId: document.getElementById('set-pers-id').value.trim(),
+                role: document.getElementById('set-role').value.trim() || 'Außendienst / Techniker',
+                weeklyHours: parseFloat(document.getElementById('set-weekly-hours').value) || 40,
+                grossSalary: parseFloat(document.getElementById('set-gross-salary').value) || 2800,
+                pauseMode: document.getElementById('set-pause-mode').value,
+                carryoverHours: Math.max(0, parseFloat(document.getElementById('set-carryover').value) || 0),
+                minWage: parseFloat(document.getElementById('set-min-wage').value) || 13.90
+            };
+
+            localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+            updateHeaderSubtitle();
+            renderMonthView();
+            renderYearView();
+            runWageCalculator();
+            showToast('Profil & Vertragsdaten gespeichert!', 'success');
+        }
+
+        async function exportBackupJSON() {
+            const payload = {
+                app: 'Außendienst Logbuch - TC Norden',
+                exportedAt: new Date().toISOString(),
+                settings,
+                entries
+            };
+            const jsonStr = JSON.stringify(payload, null, 2);
+            const filename = `ADLog_TCNorden_Backup_${formatDateISO(new Date())}.json`;
+            await shareOrDownloadFile(jsonStr, filename, 'application/json');
+        }
+
+        function importBackupJSON(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.settings) {
+                        settings = { ...DEFAULT_SETTINGS, ...data.settings };
+                        localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
+                        populateSettingsForm();
+                        updateHeaderSubtitle();
+                    }
+                    if (Array.isArray(data.entries)) {
+                        entries = data.entries;
+                        sortEntries();
+                        saveEntriesToStorage();
+                    }
+                    renderMonthView();
+                    renderYearView();
+                    showToast('Backup erfolgreich wiederhergestellt!', 'success');
+                } catch (err) {
+                    showToast('Fehler: Ungültige Backup-Datei.', 'error');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // =========================================================================
+        // ARBEITGEBER-EXPORTE (STUNDENZETTEL & EXCEL CSV – OHNE URL)
+        // =========================================================================
+        function buildTimesheetHTML() {
+            const year = viewDate.getFullYear();
+            const month = viewDate.getMonth();
+            const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            const prefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            const monthEntries = entries
+                .filter(e => e.date.startsWith(prefix))
+                .sort((a, b) => a.date.localeCompare(b.date));
+
+            if (monthEntries.length === 0) return null;
+
+            let totalIst = 0;
+            let totalSoll = 0;
+            let totalDiff = 0;
+            let spesenDays = 0;
+            const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+
+            const rowsHTML = monthEntries.map(entry => {
+                const m = calculateEntryMetrics(entry);
+                totalIst += m.netHours;
+                totalSoll += m.targetHours;
+                totalDiff += m.diffHours;
+                if (m.hasSpesen) spesenDays++;
+
+                const dObj = new Date(entry.date + 'T12:00:00');
+                const dayName = weekdays[dObj.getDay()];
+                const dateFormatted = `${String(dObj.getDate()).padStart(2, '0')}.${String(dObj.getMonth() + 1).padStart(2, '0')}.${year}`;
+                const isWeekend = (dObj.getDay() === 0 || dObj.getDay() === 6);
+
+                return `
+                    <tr class="${isWeekend ? 'weekend-row' : ''}" style="border-bottom: 1px solid #cbd5e1;">
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px;">${dateFormatted} (${dayName})</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px;">${entry.type}</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px;">${entry.type === 'Arbeit' ? entry.start : '-'}</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px;">${entry.type === 'Arbeit' ? entry.end : '-'}</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px;">${entry.type === 'Arbeit' ? entry.pause + ' Min.' : '-'}</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px; font-weight: 700;">${formatDecimalHours(m.netHours)} h</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px;">${formatDecimalHours(m.targetHours)} h</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px; font-weight: 600;">${m.diffHours >= 0 ? '+' : ''}${formatDecimalHours(m.diffHours)} h</td>
+                        <td style="border: 1px solid #94a3b8; padding: 5px 6px;">${escapeHTML(entry.note || '')}</td>
+                    </tr>
+                `;
+            }).join('');
+
+            const effectivePlus = Math.max(0, totalDiff);
+            const persLine = settings.persId ? ` • Personal-Nr.: ${escapeHTML(settings.persId)}` : '';
+
+            return `
+                <div style="font-family: Arial, Helvetica, sans-serif; color: #0f172a;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #0f172a; padding-bottom: 10px; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-size: 9pt; font-weight: 700; color: #059669; text-transform: uppercase; letter-spacing: 0.05em;">TC Norden • Arbeitszeitnachweis</div>
+                            <h1 style="margin: 2px 0 0 0; font-size: 16pt; font-weight: 800;">Stundenzettel ${monthNames[month]} ${year}</h1>
+                            <p style="margin: 4px 0 0 0; font-size: 9.5pt; color: #334155;">
+                                <strong>Mitarbeiter:</strong> ${escapeHTML(settings.name)} (${escapeHTML(settings.role)})${persLine}
+                            </p>
+                        </div>
+                        <div style="text-align: right; font-size: 9pt; color: #334155;">
+                            <div>Regelarbeitszeit: ${settings.weeklyHours} Std./Woche</div>
+                            <div>Datum: ${new Date().toLocaleDateString('de-DE')}</div>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px;">
+                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px;">
+                            <div style="font-size: 8pt; color: #475569;">Geleistete Netto-Stunden</div>
+                            <div style="font-size: 12pt; font-weight: 800; color: #0f172a;">${formatDecimalHours(totalIst)} Std.</div>
+                        </div>
+                        <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px;">
+                            <div style="font-size: 8pt; color: #475569;">Soll-Stunden (Mo–Fr)</div>
+                            <div style="font-size: 12pt; font-weight: 800; color: #0f172a;">${formatDecimalHours(totalSoll)} Std.</div>
+                        </div>
+                        <div style="background: #ecfdf5; border: 1px solid #6ee7b7; border-radius: 6px; padding: 8px;">
+                            <div style="font-size: 8pt; color: #065f46;">Überstunden / Plus-Saldo</div>
+                            <div style="font-size: 12pt; font-weight: 800; color: #047857;">+${formatDecimalHours(effectivePlus)} Std.</div>
+                        </div>
+                    </div>
+
+                    <table class="print-table" style="width: 100%; border-collapse: collapse; font-size: 8.5pt;">
+                        <thead>
+                            <tr style="background: #f1f5f9;">
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Datum</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Status</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Beginn</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Ende</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Pause</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Netto-Ist</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Soll</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Differenz</th>
+                                <th style="border: 1px solid #94a3b8; padding: 6px; text-align: left;">Einsatzort / Aufträge</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rowsHTML}
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: #e2e8f0; font-weight: 700;">
+                                <td colspan="5" style="border: 1px solid #94a3b8; padding: 6px;">GESAMT ${monthNames[month].toUpperCase()} ${year}</td>
+                                <td style="border: 1px solid #94a3b8; padding: 6px;">${formatDecimalHours(totalIst)} h</td>
+                                <td style="border: 1px solid #94a3b8; padding: 6px;">${formatDecimalHours(totalSoll)} h</td>
+                                <td style="border: 1px solid #94a3b8; padding: 6px;">+${formatDecimalHours(effectivePlus)} h</td>
+                                <td style="border: 1px solid #94a3b8; padding: 6px;">Einsätze >8h: ${spesenDays} Tage</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                    <div style="margin-top: 38px; display: flex; justify-content: space-between; gap: 36px;">
+                        <div style="flex: 1; border-top: 1px solid #334155; padding-top: 5px; font-size: 8.5pt; color: #334155;">
+                            Datum, Unterschrift Mitarbeiter (${escapeHTML(settings.name)})
+                        </div>
+                        <div style="flex: 1; border-top: 1px solid #334155; padding-top: 5px; font-size: 8.5pt; color: #334155;">
+                            Datum, Unterschrift / Stempel Arbeitgeber
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function openTimesheetPreview() {
+            const html = buildTimesheetHTML();
+            if (!html) {
+                showToast('Keine Einträge in diesem Monat vorhanden.', 'error');
+                return;
+            }
+            document.getElementById('timesheet-preview-content').innerHTML = html;
+            document.getElementById('print-area').innerHTML = html;
+            document.getElementById('timesheet-modal').classList.remove('hidden');
+        }
+
+        function closeTimesheetModal() {
+            document.getElementById('timesheet-modal').classList.add('hidden');
+        }
+
+        function triggerNativePrint() {
+            const html = buildTimesheetHTML();
+            if (!html) return;
+            document.getElementById('print-area').innerHTML = html;
+            window.print();
+        }
+
+        async function exportCSV() {
+            const year = viewDate.getFullYear();
+            const month = viewDate.getMonth();
+            const monthNames = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            const prefix = `${year}-${String(month + 1).padStart(2, '0')}`;
+
+            const monthEntries = entries
+                .filter(e => e.date.startsWith(prefix))
+                .sort((a, b) => a.date.localeCompare(b.date));
+
+            if (monthEntries.length === 0) {
+                showToast('Keine Daten für diesen Monat vorhanden.', 'error');
+                return;
+            }
+
+            const headers = ['Datum', 'Wochentag', 'Status', 'Beginn', 'Ende', 'Pause (Min)', 'Netto-Stunden', 'Soll-Stunden', 'Differenz', 'Spesen >8h (€)', 'Einsatzort / Aufträge'];
+            const weekdays = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+            let totalIst = 0, totalSoll = 0, totalDiff = 0, totalSpesen = 0;
+
+            const csvRows = [
+                `Stundenzettel ${monthNames[month]} ${year};Mitarbeiter: ${settings.name};Bereich: ${settings.role}`,
+                '',
+                headers.join(';')
+            ];
+
+            monthEntries.forEach(entry => {
+                const m = calculateEntryMetrics(entry);
+                totalIst += m.netHours;
+                totalSoll += m.targetHours;
+                totalDiff += m.diffHours;
+                const spesenVal = m.hasSpesen ? 14 : 0;
+                totalSpesen += spesenVal;
+
+                const dObj = new Date(entry.date + 'T12:00:00');
+                const dateDE = `${String(dObj.getDate()).padStart(2, '0')}.${String(dObj.getMonth() + 1).padStart(2, '0')}.${year}`;
+
+                csvRows.push([
+                    dateDE,
+                    weekdays[dObj.getDay()],
+                    entry.type,
+                    entry.start || '',
+                    entry.end || '',
+                    entry.pause || 0,
+                    m.netHours.toFixed(2).replace('.', ','),
+                    m.targetHours.toFixed(2).replace('.', ','),
+                    m.diffHours.toFixed(2).replace('.', ','),
+                    spesenVal.toFixed(2).replace('.', ','),
+                    `"${(entry.note || '').replace(/"/g, '""')}"`
+                ].join(';'));
+            });
+
+            const effectivePlus = Math.max(0, totalDiff);
+            csvRows.push([
+                'GESAMTSUMME', '', '', '', '', '',
+                totalIst.toFixed(2).replace('.', ','),
+                totalSoll.toFixed(2).replace('.', ','),
+                effectivePlus.toFixed(2).replace('.', ','),
+                totalSpesen.toFixed(2).replace('.', ','),
+                ''
+            ].join(';'));
+
+            const bom = '\uFEFF';
+            const filename = `Stundenzettel_${settings.name.replace(/\s+/g, '_')}_${monthNames[month]}_${year}.csv`;
+            await shareOrDownloadFile(bom + csvRows.join('\n'), filename, 'text/csv;charset=utf-8;');
+        }
+
+        // iOS PWA & Android kompatibler Datei-Export (Web Share API + Download-Fallback)
+        async function shareOrDownloadFile(content, filename, mimeType) {
+            try {
+                const file = new File([content], filename, { type: mimeType });
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: filename
+                    });
+                    showToast('Datei bereit zum Speichern oder Senden!', 'success');
+                    return;
+                }
+            } catch (err) {
+                if (err && err.name === 'AbortError') return;
+            }
+
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast(`Datei "${filename}" heruntergeladen!`, 'success');
+        }
+
+        // =========================================================================
+        // FORMATIERUNGS-HELFER
+        // =========================================================================
+        function formatDateISO(dateObj) {
+            const y = dateObj.getFullYear();
+            const m = String(dateObj.getMonth() + 1).padStart(2, '0');
+            const d = String(dateObj.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function formatTimeHHMM(dateObj) {
+            return `${String(dateObj.getHours()).padStart(2, '0')}:${String(dateObj.getMinutes()).padStart(2, '0')}`;
+        }
+
+        function formatDurationHMS(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const h = Math.floor(totalSeconds / 3600);
+            const m = Math.floor((totalSeconds % 3600) / 60);
+            const s = totalSeconds % 60;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+
+        function formatDecimalHours(hours) {
+            return hours.toFixed(2).replace('.', ',');
+        }
+
+        function formatEuro(amount) {
+            return amount.toFixed(2).replace('.', ',') + ' €';
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
+        }
+    </script>
+</body>
+</html>
